@@ -1,6 +1,6 @@
 ---
 title: Sobre mí
-lead: Desarrolladora frontend apasionada por construir interfaces accesibles y de alto rendimiento.
+lead: Ingeniero de Software (Full-Stack) | Junior | React & TypeScript | .NET | Python | SQL | Agentic Coding Workflows
 ---
 
-Soy Jane Doe, desarrolladora web enfocada en la experiencia de usuario y el diseño de sistemas de componentes reutilizables.
+Hola, soy Santiago Villabona y soy desarrollador de software junior con experiencia en aplicaciones empresariales full-stack, dentro de arquitecturas de microservicios en la nube. Construyo nuevas funcionalidades, evoluciono módulos existentes y resuelvo incidencias en producción, con foco en escalabilidad y estándares corporativos.

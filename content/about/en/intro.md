@@ -1,6 +1,6 @@
 ---
 title: About
-lead: Frontend developer passionate about building accessible, high-performance interfaces.
+lead: Software Engineer (Full-Stack) | Junior | React & TypeScript | .NET | Python | SQL | Agentic Coding Workflows
 ---
 
-I'm Jane Doe, a web developer focused on user experience and reusable component system design.
+Hi, I'm Santiago Villabona and I'm a junior software developer with experience in full-stack enterprise applications within cloud-based microservices architectures. I build new features, evolve existing modules, and resolve production issues, with a focus on scalability and corporate standards.

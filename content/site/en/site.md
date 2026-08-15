@@ -1,9 +1,9 @@
 ---
-name: Jane Doe
-role: Frontend Developer
-email: jane.doe@example.com
-linkedin: https://www.linkedin.com/in/jane-doe
-github: https://github.com/jane-doe
+name: Santiago Villabona
+role: Junior Developer
+email: santiago.villabona.aponte@gmail.com
+linkedin: www.linkedin.com/in/santiago-villabona-aponte
+github: https://github.com/MeperDonas
 nav:
   about: About
   experience: Experience

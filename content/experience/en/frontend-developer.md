@@ -1,13 +1,14 @@
 ---
-role: Frontend Developer
-company: Sample Company
-start: "2018-02"
-end: "2021-11"
+role: Junior .NET Full-Stack Developer | Blazor
+company: Control Online International
+start: "2026-05"
+end: "Actually"
 tags:
-  - React
-  - TypeScript
-  - Tailwind CSS
+  - .Net
+  - Blazor
+  - SQL Server
+  - Azure
 ---
 
-- Built and maintained reusable UI components.
-- Cut render time by 40% through performance optimization.
+- Contributed to the development and support of enterprise-level web applications, implementing new features and resolving production incidents.
+- Worked as a Full-Stack developer using .NET and Blazor, focused on performance, reusable components, and API integrations.
