@@ -1,6 +1,7 @@
 ---
 import '@fontsource-variable/geist';
 import '@fontsource-variable/geist-mono';
+import Analytics from '@vercel/analytics/astro';
 import '../styles/global.css';
 
 interface Props {
@@ -23,6 +24,7 @@ const { title, description } = Astro.props;
   <body class="bg-canvas text-ink antialiased">
     <div aria-hidden="true" class="mouse-glow"></div>
     <slot />
+    <Analytics />
     <script>
       import '../scripts/app';
     </script>
