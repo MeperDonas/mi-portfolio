@@ -1,7 +1,8 @@
 ---
 import Base from '../layouts/Base.astro';
-import Header from '../components/Header.astro';
 import Hero from '../components/Hero.astro';
+import LanguageToggle from '../components/LanguageToggle.astro';
+import SiteNav from '../components/SiteNav.astro';
 import About from '../components/About.astro';
 import Experience from '../components/Experience.astro';
 import Projects from '../components/Projects.astro';
@@ -56,46 +57,87 @@ const hasProjectsEs = projectsEs.length > 0;
 const hasProjectsEn = projectsEn.length > 0;
 const hasCertificationsEs = certificationsEs.length > 0;
 const hasCertificationsEn = certificationsEn.length > 0;
+
+// The vertical nav only shows items whose section actually renders (matches the
+// empty-shell suppression above), so every nav link has a real deck target.
+const navSections: { id: string; key: 'about' | 'experience' | 'projects' | 'certifications'; available: boolean }[] = [
+  { id: 'about', key: 'about', available: hasAboutEs || hasAboutEn },
+  { id: 'experience', key: 'experience', available: hasExperienceEs || hasExperienceEn },
+  { id: 'projects', key: 'projects', available: hasProjectsEs || hasProjectsEn },
+  { id: 'certifications', key: 'certifications', available: hasCertificationsEs || hasCertificationsEn },
+];
+const availableNavSections = navSections.filter((section) => section.available).map(({ id, key }) => ({ id, key }));
 ---
 
 <Base title={title} description={description}>
-  <Header brand={brand} nav={{ es: es.data.nav, en: en.data.nav }} />
+  <!--
+    Split layout: the left column holds identity + nav and stays fixed; the
+    right column is a snap-scroll deck. On lg+ the page does not free-scroll
+    (h-screen + overflow-hidden), only the deck scrolls internally. Below lg the
+    two stack and the page scrolls naturally.
+  -->
+  <main class="mx-auto max-w-7xl lg:grid lg:h-screen lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:gap-20 lg:overflow-hidden">
+    <!-- Identity + nav column: content aligned to the top. -->
+    <aside class="flex flex-col px-6 pb-8 pt-8 lg:h-full lg:overflow-y-auto lg:px-10 lg:py-14 lg:pb-10">
+      <div class="flex items-center justify-between">
+        <a
+          href="#top"
+          data-scroll-top
+          class="flex items-center gap-2.5 text-[15px] font-medium text-ink"
+        >
+          <span aria-hidden="true" class="inline-block h-3.5 w-3.5 rounded-xs bg-primary"></span>
+          {brand}
+        </a>
+        <LanguageToggle />
+      </div>
 
-  <main class="mx-auto max-w-7xl lg:grid lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:gap-24">
-    <!-- Identity column: sticky, vertically centered while the right scrolls. -->
-    <aside class="px-6 py-20 lg:sticky lg:top-14 lg:flex lg:h-[calc(100vh-3.5rem)] lg:items-center lg:px-0 lg:py-0">
-      <Hero
-        locale="es"
-        name={es.data.name}
-        role={es.data.role}
-        email={es.data.email}
-        linkedin={es.data.linkedin}
-        github={es.data.github}
-        cv={es.data.cv}
-      />
-      <Hero
-        locale="en"
-        name={en.data.name}
-        role={en.data.role}
-        email={en.data.email}
-        linkedin={en.data.linkedin}
-        github={en.data.github}
-        cv={en.data.cv}
-        hidden
-      />
+      <div class="mt-10 lg:mt-14">
+        <Hero
+          locale="es"
+          name={es.data.name}
+          role={es.data.role}
+          email={es.data.email}
+          linkedin={es.data.linkedin}
+          github={es.data.github}
+          cv={es.data.cv}
+        />
+        <Hero
+          locale="en"
+          name={en.data.name}
+          role={en.data.role}
+          email={en.data.email}
+          linkedin={en.data.linkedin}
+          github={en.data.github}
+          cv={en.data.cv}
+          hidden
+        />
+      </div>
+
+      <SiteNav nav={{ es: es.data.nav, en: en.data.nav }} items={availableNavSections} />
     </aside>
 
-    <!-- Scrolling sections column. -->
-    <div class="pb-24">
+    <!-- Snap-scroll section deck (lg+). -->
+    <div
+      data-scroll-root
+      class="split-scroller px-6 pb-16 lg:h-full lg:overflow-y-auto lg:px-10 lg:pb-0 lg:[scroll-snap-type:y_mandatory]"
+    >
       {(hasAboutEs || hasAboutEn) && (
-        <div id="about">
+        <div
+          id="about"
+          data-section
+          class="deck-section lg:flex lg:min-h-full lg:flex-col lg:justify-center lg:[scroll-snap-align:start] lg:[scroll-snap-stop:always]"
+        >
           {hasAboutEs && <About locale="es" entries={aboutEs} />}
           {hasAboutEn && <About locale="en" entries={aboutEn} hidden />}
         </div>
       )}
 
       {(hasExperienceEs || hasExperienceEn) && (
-        <div id="experience">
+        <div
+          id="experience"
+          data-section
+          class="deck-section lg:flex lg:min-h-full lg:flex-col lg:justify-center lg:[scroll-snap-align:start] lg:[scroll-snap-stop:always]"
+        >
           {hasExperienceEs && (
             <Experience
               locale="es"
@@ -117,14 +159,22 @@ const hasCertificationsEn = certificationsEn.length > 0;
       )}
 
       {(hasProjectsEs || hasProjectsEn) && (
-        <div id="projects">
+        <div
+          id="projects"
+          data-section
+          class="deck-section lg:flex lg:min-h-full lg:flex-col lg:justify-center lg:[scroll-snap-align:start] lg:[scroll-snap-stop:always]"
+        >
           {hasProjectsEs && <Projects locale="es" title={es.data.nav.projects} entries={projectsEs} />}
           {hasProjectsEn && <Projects locale="en" title={en.data.nav.projects} entries={projectsEn} hidden />}
         </div>
       )}
 
       {(hasCertificationsEs || hasCertificationsEn) && (
-        <div id="certifications">
+        <div
+          id="certifications"
+          data-section
+          class="deck-section lg:flex lg:min-h-full lg:flex-col lg:justify-center lg:[scroll-snap-align:start] lg:[scroll-snap-stop:always]"
+        >
           {hasCertificationsEs && (
             <Certifications
               locale="es"
@@ -142,7 +192,6 @@ const hasCertificationsEn = certificationsEn.length > 0;
           )}
         </div>
       )}
-
     </div>
   </main>
 

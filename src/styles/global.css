@@ -35,8 +35,6 @@
     color: var(--color-ink);
     background-color: var(--color-canvas);
     scroll-behavior: smooth;
-    /* Keeps anchored sections clear of the sticky header (56px nav). */
-    scroll-padding-top: 4.5rem;
   }
 
   :focus-visible {
@@ -51,7 +49,9 @@
   }
 }
 
-/* Scroll reveal (subtle; driven by IntersectionObserver in src/scripts/app.ts). */
+/* Scroll reveal (subtle; driven by IntersectionObserver in src/scripts/app.ts).
+   This base rule applies to elements outside the section deck (e.g. the left
+   identity column). Deck sections override it below with a state-driven reveal. */
 [data-reveal] {
   opacity: 0;
   transform: translateY(12px);
@@ -63,6 +63,85 @@
 [data-reveal].is-visible {
   opacity: 1;
   transform: none;
+}
+
+/*
+ * Section deck (right split).
+ *
+ * Every [data-reveal] inside a deck section is hidden until its section gains
+ * `.is-active` (driven by src/scripts/app.ts from the scroll position). Entry is
+ * a staggered fade + slide; exit is faster with no stagger, so non-active
+ * sections settle out of the way quickly.
+ */
+.deck-section [data-reveal] {
+  opacity: 0;
+  transform: translateY(16px);
+  transition:
+    opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.deck-section.is-active [data-reveal] {
+  opacity: 1;
+  transform: none;
+}
+
+/* Exit faster than entry: snappier ease, no stagger. */
+.deck-section:not(.is-active) [data-reveal] {
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+  transition-delay: 0ms;
+}
+
+/* Deck sections vertically center their content; tone down the components'
+   generous py-section so centered content stays comfortably within the viewport. */
+@media (min-width: 1024px) {
+  .deck-section > section {
+    width: 100%;
+    padding-block: 3rem;
+  }
+}
+
+/* Vertical section nav (left split): rail + sliding indicator. */
+.split-nav {
+  position: relative;
+}
+
+.split-nav [data-nav-item].is-active a {
+  color: var(--color-primary);
+}
+
+@media (min-width: 1024px) {
+  .split-nav {
+    padding-left: 1.5rem;
+  }
+
+  /* Static rail the indicator slides along. */
+  .split-nav::before {
+    content: '';
+    position: absolute;
+    top: 6px;
+    bottom: 6px;
+    left: 0;
+    width: 1px;
+    background: var(--color-hairline);
+  }
+
+  .split-nav-indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1px;
+    background: var(--color-primary);
+    box-shadow: 0 0 12px rgba(94, 106, 210, 0.45);
+    opacity: 0;
+    transition:
+      transform 300ms cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 200ms ease;
+    will-change: transform;
+  }
 }
 
 /* Mouse-reactive background glow (fixed overlay, position updated by app.ts). */
@@ -80,8 +159,14 @@
   transition: transform 0.5s ease 0.25s;
 }
 
-[data-reveal].is-visible .timeline-line {
+[data-reveal].is-visible .timeline-line,
+.deck-section.is-active [data-reveal] .timeline-line {
   transform: scaleY(1);
+}
+
+.deck-section:not(.is-active) [data-reveal] .timeline-line,
+.deck-section:not(.is-active) [data-reveal] .timeline-dot {
+  transition-delay: 0s;
 }
 
 .timeline-dot {
@@ -89,7 +174,8 @@
   transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s;
 }
 
-[data-reveal].is-visible .timeline-dot {
+[data-reveal].is-visible .timeline-dot,
+.deck-section.is-active [data-reveal] .timeline-dot {
   transform: scale(1);
 }
 
@@ -163,15 +249,21 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  [data-reveal] {
+  [data-reveal],
+  .deck-section [data-reveal] {
     opacity: 1;
     transform: none;
     transition: none;
+    transition-delay: 0ms;
   }
 
   .timeline-line,
   .timeline-dot {
     transform: none;
+    transition: none;
+  }
+
+  .split-nav-indicator {
     transition: none;
   }
 

@@ -21,7 +21,7 @@ const { title, description } = Astro.props;
     <title>{title}</title>
     {description && <meta name="description" content={description} />}
   </head>
-  <body class="bg-canvas text-ink antialiased">
+  <body class="bg-canvas text-ink antialiased lg:h-screen lg:overflow-hidden">
     <div aria-hidden="true" class="mouse-glow"></div>
     <slot />
     <Analytics />

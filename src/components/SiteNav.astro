@@ -1,0 +1,48 @@
+---
+import type { Locale } from '../lib/i18n';
+
+export interface NavLabels {
+  about: string;
+  experience: string;
+  projects: string;
+  certifications: string;
+}
+
+export interface NavSectionItem {
+  id: string;
+  key: keyof NavLabels;
+}
+
+interface Props {
+  nav: Record<Locale, NavLabels>;
+  items: NavSectionItem[];
+}
+
+const { nav, items } = Astro.props;
+---
+
+<!--
+  Vertical section nav for the split layout (About/Experience/Projects/
+  Certifications). Renders a horizontal scrollable row on mobile and a vertical
+  list with an animated indicator rail on lg+. src/scripts/app.ts drives the
+  indicator position, the active state, and the smooth scroll-on-click.
+-->
+<nav data-split-nav class="split-nav mt-10 lg:mt-14" aria-label="Primary">
+  <ul class="flex items-center gap-5 overflow-x-auto pb-1 lg:block lg:gap-0 lg:overflow-visible lg:pb-0">
+    {
+      items.map(({ id, key }) => (
+        <li data-nav-item={id} class="shrink-0 lg:shrink">
+          <a
+            href={`#${id}`}
+            data-scroll-to={id}
+            class="block whitespace-nowrap py-2 text-sm font-medium tracking-[0.2px] text-ink-subtle transition-colors duration-200 hover:text-ink lg:py-2.5"
+          >
+            <span data-locale="es">{nav.es[key]}</span>
+            <span data-locale="en" hidden>{nav.en[key]}</span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+  <span data-nav-indicator class="split-nav-indicator hidden lg:block" aria-hidden="true"></span>
+</nav>
