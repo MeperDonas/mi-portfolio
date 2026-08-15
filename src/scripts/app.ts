@@ -1,7 +1,9 @@
-// Client-side DOM behavior: subtle scroll reveals and a mouse-reactive
-// background glow, both gated behind prefers-reduced-motion.
-if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-  // --- Scroll reveals ---
+// Client-side DOM behavior: subtle scroll reveals, a mouse-reactive background
+// glow, and a terminal typewriter, all gated behind prefers-reduced-motion.
+const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// --- Scroll reveals ---
+if (!reducedMotion) {
   const revealEls = document.querySelectorAll<HTMLElement>('[data-reveal]');
   if ('IntersectionObserver' in window) {
     const observer = new IntersectionObserver(
@@ -19,8 +21,51 @@ if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
   } else {
     revealEls.forEach((el) => el.classList.add('is-visible'));
   }
+}
 
-  // --- Mouse-reactive background glow (lerped follow) ---
+// --- Terminal typewriter: types a Python print in a loop ---
+// Both locale copies stay in sync, so a language toggle always shows the
+// already-typed result.
+const typed = 'print("I love cats")';
+const termEls = Array.from(document.querySelectorAll<HTMLElement>('.terminal-text'));
+if (termEls.length > 0) {
+  if (reducedMotion) {
+    termEls.forEach((el) => {
+      el.textContent = typed;
+    });
+  } else {
+    let index = 0;
+    let deleting = false;
+    const typeDelay = 85;
+    const holdDelay = 2400;
+    const paint = () => {
+      termEls.forEach((el) => {
+        el.textContent = typed.slice(0, index);
+      });
+    };
+    const step = () => {
+      if (deleting) {
+        index -= 1;
+        paint();
+        if (index === 0) deleting = false;
+        window.setTimeout(step, typeDelay / 2);
+      } else if (index < typed.length) {
+        index += 1;
+        paint();
+        window.setTimeout(step, typeDelay);
+      } else {
+        window.setTimeout(() => {
+          deleting = true;
+          step();
+        }, holdDelay);
+      }
+    };
+    step();
+  }
+}
+
+// --- Mouse-reactive background glow (lerped follow) ---
+if (!reducedMotion) {
   const glow = document.querySelector<HTMLElement>('.mouse-glow');
   if (glow) {
     let targetX = window.innerWidth / 2;
