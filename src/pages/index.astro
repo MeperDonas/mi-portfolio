@@ -6,7 +6,6 @@ import About from '../components/About.astro';
 import Experience from '../components/Experience.astro';
 import Projects from '../components/Projects.astro';
 import Certifications from '../components/Certifications.astro';
-import Contact from '../components/Contact.astro';
 import {
   getAbout,
   getCertifications,
@@ -142,19 +141,6 @@ const hasCertificationsEn = certificationsEn.length > 0;
         </div>
       )}
 
-      <div id="contact">
-        <Contact
-          locale="es"
-          title={es.data.nav.contact}
-          email={es.data.email}
-        />
-        <Contact
-          locale="en"
-          title={en.data.nav.contact}
-          email={en.data.email}
-          hidden
-        />
-      </div>
     </div>
   </main>
 </Base>
