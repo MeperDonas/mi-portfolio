@@ -145,6 +145,33 @@ const hasCertificationsEn = certificationsEn.length > 0;
 
     </div>
   </main>
+
+  {es.data.cv && (
+    <div data-cv-modal data-cv-locale="es" class="cv-modal" hidden>
+      <div class="cv-modal-backdrop" data-cv-close></div>
+      <div class="cv-modal-panel">
+        <iframe
+          src={`${es.data.cv}#navpanes=0&view=FitH`}
+          title="Curriculum Vitae"
+          class="cv-modal-frame"
+          loading="lazy"
+        ></iframe>
+      </div>
+    </div>
+  )}
+  {en.data.cv && (
+    <div data-cv-modal data-cv-locale="en" class="cv-modal" hidden>
+      <div class="cv-modal-backdrop" data-cv-close></div>
+      <div class="cv-modal-panel">
+        <iframe
+          src={`${en.data.cv}#navpanes=0&view=FitH`}
+          title="Resume"
+          class="cv-modal-frame"
+          loading="lazy"
+        ></iframe>
+      </div>
+    </div>
+  )}
 </Base>
 
 <script>

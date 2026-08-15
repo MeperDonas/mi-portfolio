@@ -144,46 +144,6 @@
   animation: cv-pop 0.18s ease-out;
 }
 
-.cv-modal-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-  padding: 0.5rem 0.75rem;
-  border-bottom: 1px solid var(--color-hairline);
-  background: var(--color-canvas);
-}
-
-.cv-modal-title {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  color: var(--color-ink-subtle);
-}
-
-.cv-modal-actions {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-}
-
-.cv-modal-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 2rem;
-  height: 2rem;
-  border-radius: 8px;
-  color: var(--color-ink-subtle);
-  transition:
-    color 0.2s ease,
-    background-color 0.2s ease;
-}
-
-.cv-modal-icon:hover {
-  color: var(--color-primary-hover);
-  background: var(--color-surface-2);
-}
-
 .cv-modal-frame {
   flex: 1;
   width: 100%;

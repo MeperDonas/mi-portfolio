@@ -15,8 +15,6 @@ interface Props {
 const { locale, name, role, email, linkedin, github, cv, hidden } = Astro.props;
 
 const cvLabel = locale === 'es' ? 'Ver CV' : 'View CV';
-const cvFrameTitle = locale === 'es' ? 'Curriculum Vitae' : 'Resume';
-const cvDownloadLabel = locale === 'es' ? 'Descargar CV' : 'Download CV';
 ---
 
 <div data-locale={locale} hidden={hidden || undefined} class="flex flex-col items-center text-center">
@@ -116,53 +114,4 @@ const cvDownloadLabel = locale === 'es' ? 'Descargar CV' : 'Download CV';
       </button>
     )}
   </div>
-
-  {cv && (
-    <div data-cv-modal class="cv-modal" hidden>
-      <div class="cv-modal-backdrop" data-cv-close></div>
-      <div class="cv-modal-panel" role="dialog" aria-modal="true" aria-label={cvFrameTitle}>
-        <div class="cv-modal-bar">
-          <span class="cv-modal-title">{cvFrameTitle}</span>
-          <div class="cv-modal-actions">
-            <a
-              href={cv}
-              download
-              aria-label={cvDownloadLabel}
-              class="cv-modal-icon"
-            >
-              <svg
-                class="h-4 w-4"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                <path d="M7 10l5 5 5-5"></path>
-                <path d="M12 15V3"></path>
-              </svg>
-            </a>
-            <button type="button" data-cv-close aria-label="Close" class="cv-modal-icon">
-              <svg
-                class="h-4 w-4"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M18 6L6 18M6 6l12 12"></path>
-              </svg>
-            </button>
-          </div>
-        </div>
-        <iframe src={cv} title={cvFrameTitle} class="cv-modal-frame" loading="lazy"></iframe>
-      </div>
-    </div>
-  )}
 </div>

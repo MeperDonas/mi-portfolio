@@ -94,12 +94,12 @@ if (!reducedMotion) {
 // --- CV preview modal ---
 for (const button of document.querySelectorAll<HTMLElement>('[data-cv-open]')) {
   button.addEventListener('click', () => {
-    const scope = button.closest('[data-locale]');
-    const modal = scope?.querySelector<HTMLElement>('[data-cv-modal]');
+    const locale = button.closest('[data-locale]')?.getAttribute('data-locale');
+    const modal = document.querySelector<HTMLElement>(
+      `[data-cv-modal][data-cv-locale="${locale}"]`,
+    );
     if (!modal) return;
     modal.hidden = false;
-    const closeBtn = modal.querySelector<HTMLElement>('[data-cv-close]');
-    closeBtn?.focus();
   });
 }
 
