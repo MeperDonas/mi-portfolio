@@ -14,7 +14,7 @@ const { locale, title, entries, hidden } = Astro.props;
 
 {entries.length > 0 && (
   <section data-locale={locale} class="py-section" hidden={hidden || undefined}>
-    <div class="mx-auto max-w-6xl px-6">
+    <div class="px-6">
       <h2
         class="text-3xl font-semibold tracking-[-0.025em] text-ink sm:text-4xl"
         data-reveal
@@ -25,7 +25,7 @@ const { locale, title, entries, hidden } = Astro.props;
         {
           entries.map((entry) => (
             <article
-              class="rounded-lg border border-hairline bg-surface-1 p-6 transition-colors hover:bg-surface-2"
+              class="flex aspect-[4/5] flex-col rounded-lg border border-hairline bg-surface-1 p-6 transition-colors hover:bg-surface-2"
               data-reveal
             >
               <div class="flex items-start justify-between gap-4">
@@ -56,7 +56,7 @@ const { locale, title, entries, hidden } = Astro.props;
                 )}
               </div>
               <p class="mt-2 text-sm leading-relaxed text-ink-muted">{entry.data.description}</p>
-              <ul class="mt-4 flex flex-wrap gap-2">
+              <ul class="mt-auto flex flex-wrap gap-2 pt-6">
                 {entry.data.stack.map((tech) => (
                   <li class="rounded-sm border border-hairline px-2.5 py-1 text-[12px] text-ink-muted">
                     {tech}

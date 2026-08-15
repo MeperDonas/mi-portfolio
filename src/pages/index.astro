@@ -62,84 +62,99 @@ const hasCertificationsEn = certificationsEn.length > 0;
 <Base title={title} description={description}>
   <Header brand={brand} nav={{ es: es.data.nav, en: en.data.nav }} />
 
-  <main>
-    <div id="top">
-      <Hero locale="es" name={es.data.name} role={es.data.role} />
-      <Hero locale="en" name={en.data.name} role={en.data.role} hidden />
-    </div>
-
-    {(hasAboutEs || hasAboutEn) && (
-      <div id="about">
-        {hasAboutEs && <About locale="es" entries={aboutEs} />}
-        {hasAboutEn && <About locale="en" entries={aboutEn} hidden />}
-      </div>
-    )}
-
-    {(hasExperienceEs || hasExperienceEn) && (
-      <div id="experience">
-        {hasExperienceEs && (
-          <Experience
-            locale="es"
-            title={es.data.nav.experience}
-            presentLabel="Actualidad"
-            entries={experienceEs}
-          />
-        )}
-        {hasExperienceEn && (
-          <Experience
-            locale="en"
-            title={en.data.nav.experience}
-            presentLabel="Present"
-            entries={experienceEn}
-            hidden
-          />
-        )}
-      </div>
-    )}
-
-    {(hasProjectsEs || hasProjectsEn) && (
-      <div id="projects">
-        {hasProjectsEs && <Projects locale="es" title={es.data.nav.projects} entries={projectsEs} />}
-        {hasProjectsEn && <Projects locale="en" title={en.data.nav.projects} entries={projectsEn} hidden />}
-      </div>
-    )}
-
-    {(hasCertificationsEs || hasCertificationsEn) && (
-      <div id="certifications">
-        {hasCertificationsEs && (
-          <Certifications
-            locale="es"
-            title={es.data.nav.certifications}
-            entries={certificationsEs}
-          />
-        )}
-        {hasCertificationsEn && (
-          <Certifications
-            locale="en"
-            title={en.data.nav.certifications}
-            entries={certificationsEn}
-            hidden
-          />
-        )}
-      </div>
-    )}
-
-    <div id="contact">
-      <Contact
+  <main class="mx-auto max-w-6xl lg:grid lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:gap-20">
+    <!-- Identity column: sticky, vertically centered while the right scrolls. -->
+    <aside class="px-6 py-20 lg:sticky lg:top-14 lg:flex lg:h-[calc(100vh-3.5rem)] lg:items-center lg:px-0 lg:py-0">
+      <Hero
         locale="es"
-        title={es.data.nav.contact}
+        name={es.data.name}
+        role={es.data.role}
         email={es.data.email}
         linkedin={es.data.linkedin}
         github={es.data.github}
       />
-      <Contact
+      <Hero
         locale="en"
-        title={en.data.nav.contact}
+        name={en.data.name}
+        role={en.data.role}
         email={en.data.email}
         linkedin={en.data.linkedin}
         github={en.data.github}
         hidden
       />
+    </aside>
+
+    <!-- Scrolling sections column. -->
+    <div class="pb-24">
+      {(hasAboutEs || hasAboutEn) && (
+        <div id="about">
+          {hasAboutEs && <About locale="es" entries={aboutEs} />}
+          {hasAboutEn && <About locale="en" entries={aboutEn} hidden />}
+        </div>
+      )}
+
+      {(hasExperienceEs || hasExperienceEn) && (
+        <div id="experience">
+          {hasExperienceEs && (
+            <Experience
+              locale="es"
+              title={es.data.nav.experience}
+              presentLabel="Actualidad"
+              entries={experienceEs}
+            />
+          )}
+          {hasExperienceEn && (
+            <Experience
+              locale="en"
+              title={en.data.nav.experience}
+              presentLabel="Present"
+              entries={experienceEn}
+              hidden
+            />
+          )}
+        </div>
+      )}
+
+      {(hasProjectsEs || hasProjectsEn) && (
+        <div id="projects">
+          {hasProjectsEs && <Projects locale="es" title={es.data.nav.projects} entries={projectsEs} />}
+          {hasProjectsEn && <Projects locale="en" title={en.data.nav.projects} entries={projectsEn} hidden />}
+        </div>
+      )}
+
+      {(hasCertificationsEs || hasCertificationsEn) && (
+        <div id="certifications">
+          {hasCertificationsEs && (
+            <Certifications
+              locale="es"
+              title={es.data.nav.certifications}
+              entries={certificationsEs}
+            />
+          )}
+          {hasCertificationsEn && (
+            <Certifications
+              locale="en"
+              title={en.data.nav.certifications}
+              entries={certificationsEn}
+              hidden
+            />
+          )}
+        </div>
+      )}
+
+      <div id="contact">
+        <Contact
+          locale="es"
+          title={es.data.nav.contact}
+          email={es.data.email}
+        />
+        <Contact
+          locale="en"
+          title={en.data.nav.contact}
+          email={en.data.email}
+          hidden
+        />
+      </div>
     </div>
   </main>
 </Base>
