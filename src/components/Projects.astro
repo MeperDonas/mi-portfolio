@@ -14,25 +14,31 @@ const { locale, title, entries, hidden } = Astro.props;
 
 {entries.length > 0 && (
   <section data-locale={locale} class="py-section" hidden={hidden || undefined}>
-    <div class="mx-auto max-w-5xl px-6">
-      <p class="font-mono text-sm text-accent" data-reveal>03.</p>
-      <h2 class="mt-2 text-3xl font-semibold text-ink" data-reveal>{title}</h2>
+    <div class="mx-auto max-w-6xl px-6">
+      <h2
+        class="text-3xl font-semibold tracking-[-0.025em] text-ink sm:text-4xl"
+        data-reveal
+      >
+        {title}
+      </h2>
       <div class="mt-10 grid gap-6 sm:grid-cols-2">
         {
           entries.map((entry) => (
             <article
-              class="group rounded-xl border border-line bg-surface p-6 transition-all duration-300 hover:-translate-y-0.5 hover:border-accent hover:shadow-lg"
+              class="rounded-lg border border-hairline bg-surface-1 p-6 transition-colors hover:bg-surface-2"
               data-reveal
             >
               <div class="flex items-start justify-between gap-4">
-                <h3 class="text-lg font-semibold text-ink">{entry.data.title}</h3>
+                <h3 class="text-[22px] font-medium tracking-[-0.4px] text-ink">
+                  {entry.data.title}
+                </h3>
                 {entry.data.url && (
                   <a
                     href={entry.data.url}
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={entry.data.title}
-                    class="text-muted transition-colors hover:text-accent"
+                    class="text-ink-subtle transition-colors hover:text-primary"
                   >
                     <svg
                       class="h-4 w-4"
@@ -49,10 +55,10 @@ const { locale, title, entries, hidden } = Astro.props;
                   </a>
                 )}
               </div>
-              <p class="mt-2 text-sm leading-relaxed text-muted">{entry.data.description}</p>
+              <p class="mt-2 text-sm leading-relaxed text-ink-muted">{entry.data.description}</p>
               <ul class="mt-4 flex flex-wrap gap-2">
                 {entry.data.stack.map((tech) => (
-                  <li class="rounded-full border border-line px-3 py-1 font-mono text-xs text-muted">
+                  <li class="rounded-sm border border-hairline px-2.5 py-1 text-[12px] text-ink-muted">
                     {tech}
                   </li>
                 ))}

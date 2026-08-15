@@ -4,79 +4,44 @@
   --font-sans: 'Geist Variable', ui-sans-serif, system-ui, sans-serif;
   --font-mono: 'Geist Mono Variable', ui-monospace, 'SFMono-Regular', monospace;
 
-  /* Semantic tokens — light (Catppuccin Latte) defaults */
-  --color-base: #eff1f5;
-  --color-surface: #e6e9ef;
-  --color-raised: #ccd0da;
-  --color-ink: #4c4f69;
-  --color-muted: #6c6f85;
-  --color-faint: #9ca0b0;
-  --color-line: #ccd0da;
-  --color-accent: #8839ef;
+  /* Linear dark canvas (source: DESIGN.md) */
+  --color-canvas: #010102;
+  --color-surface-1: #0f1011;
+  --color-surface-2: #141516;
+  --color-surface-3: #18191a;
+  --color-surface-4: #191a1b;
+  --color-hairline: #23252a;
+  --color-hairline-strong: #34343a;
+  --color-hairline-tertiary: #3e3e44;
 
-  /* Full Catppuccin palette (Latte) */
-  --color-mauve: #8839ef;
-  --color-red: #d20f39;
-  --color-maroon: #e64553;
-  --color-peach: #fe640b;
-  --color-yellow: #df8e1d;
-  --color-green: #40a02b;
-  --color-teal: #179299;
-  --color-sky: #04a5e5;
-  --color-sapphire: #209fb5;
-  --color-blue: #1e66f5;
-  --color-lavender: #7287fd;
-  --color-pink: #ea76cb;
-  --color-flamingo: #dd7878;
-  --color-rosewater: #dc8a78;
+  --color-ink: #f7f8f8;
+  --color-ink-muted: #d0d6e0;
+  --color-ink-subtle: #8a8f98;
+  --color-ink-tertiary: #62666d;
 
-  --spacing-section: 6rem;
-}
+  --color-primary: #5e6ad2;
+  --color-primary-hover: #828fff;
+  --color-primary-focus: #5e69d1;
+  --color-on-primary: #ffffff;
 
-/* Dark (Catppuccin Mocha) overrides */
-[data-theme='dark'] {
-  --color-base: #1e1e2e;
-  --color-surface: #181825;
-  --color-raised: #313244;
-  --color-ink: #cdd6f4;
-  --color-muted: #a6adc8;
-  --color-faint: #6c7086;
-  --color-line: #313244;
-  --color-accent: #cba6f7;
+  --color-success: #27a644;
 
-  --color-mauve: #cba6f7;
-  --color-red: #f38ba8;
-  --color-maroon: #eba0ac;
-  --color-peach: #fab387;
-  --color-yellow: #f9e2af;
-  --color-green: #a6e3a1;
-  --color-teal: #94e2d5;
-  --color-sky: #89dceb;
-  --color-sapphire: #74c7ec;
-  --color-blue: #89b4fa;
-  --color-lavender: #b4befe;
-  --color-pink: #f5c2e7;
-  --color-flamingo: #f2cdcd;
-  --color-rosewater: #f5e0dc;
+  --spacing-section: 96px;
 }
 
 @layer base {
   html {
     font-family: var(--font-sans);
     color: var(--color-ink);
-    background-color: var(--color-base);
+    background-color: var(--color-canvas);
     scroll-behavior: smooth;
-    /* Keeps anchored sections clear of the sticky header. */
-    scroll-padding-top: 5rem;
+    /* Keeps anchored sections clear of the sticky header (56px nav). */
+    scroll-padding-top: 4.5rem;
   }
 
-  h1,
-  h2,
-  h3,
-  h4 {
-    font-family: var(--font-mono);
-    font-weight: 600;
-    letter-spacing: -0.02em;
+  :focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
   }
 
   /* The i18n toggle flips `hidden` on `[data-locale]` nodes; make sure the
@@ -86,35 +51,18 @@
   }
 }
 
-/* Scroll reveal (driven by IntersectionObserver in src/scripts/app.ts). */
+/* Scroll reveal (subtle; driven by IntersectionObserver in src/scripts/app.ts). */
 [data-reveal] {
   opacity: 0;
-  transform: translateY(16px);
+  transform: translateY(12px);
   transition:
-    opacity 0.6s ease,
-    transform 0.6s ease;
+    opacity 0.5s ease,
+    transform 0.5s ease;
 }
 
 [data-reveal].is-visible {
   opacity: 1;
   transform: none;
-}
-
-/* Theme toggle icons: light shows the moon (switch to dark), dark shows the sun. */
-.theme-icon--moon {
-  display: block;
-}
-
-.theme-icon--sun {
-  display: none;
-}
-
-[data-theme='dark'] .theme-icon--sun {
-  display: block;
-}
-
-[data-theme='dark'] .theme-icon--moon {
-  display: none;
 }
 
 @media (prefers-reduced-motion: reduce) {

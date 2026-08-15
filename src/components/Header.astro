@@ -1,6 +1,5 @@
 ---
 import LanguageToggle from './LanguageToggle.astro';
-import ThemeToggle from './ThemeToggle.astro';
 import type { Locale } from '../lib/i18n';
 
 export interface NavLabels {
@@ -27,23 +26,21 @@ const links: { href: string; key: keyof NavLabels }[] = [
 ];
 ---
 
-<header class="sticky top-0 z-50 border-b border-line bg-base/80 backdrop-blur">
-  <div class="mx-auto flex max-w-5xl items-center justify-between gap-4 px-6 py-4">
-    <a href="#top" class="font-mono text-lg font-semibold text-ink">
-      <span class="text-accent">~</span>{brand}
+<header class="sticky top-0 z-50 border-b border-hairline bg-canvas">
+  <div class="mx-auto flex h-14 max-w-6xl items-center justify-between gap-4 px-6">
+    <a href="#top" class="flex items-center gap-2.5 text-[15px] font-medium text-ink">
+      <span aria-hidden="true" class="inline-block h-3.5 w-3.5 rounded-xs bg-primary"></span>
+      {brand}
     </a>
 
     <nav aria-label="Primary">
-      <ul class="flex items-center gap-6 font-mono text-sm text-muted">
+      <ul class="flex items-center gap-7 text-sm text-ink-subtle">
         {
           links.map(({ href, key }) => (
             <li class="hidden md:block">
-              <a href={href} class="group relative transition-colors hover:text-ink">
+              <a href={href} class="transition-colors hover:text-ink">
                 <span data-locale="es">{nav.es[key]}</span>
                 <span data-locale="en" hidden>{nav.en[key]}</span>
-                <span
-                  class="absolute -bottom-0.5 left-0 h-px w-0 bg-accent transition-all duration-300 group-hover:w-full"
-                ></span>
               </a>
             </li>
           ))
@@ -51,9 +48,6 @@ const links: { href: string; key: keyof NavLabels }[] = [
       </ul>
     </nav>
 
-    <div class="flex items-center gap-3">
-      <ThemeToggle />
-      <LanguageToggle />
-    </div>
+    <LanguageToggle />
   </div>
 </header>

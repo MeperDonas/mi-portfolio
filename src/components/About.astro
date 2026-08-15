@@ -24,10 +24,14 @@ const rendered = await Promise.all(
       {
         rendered.map(({ entry, Content }) => (
           <div>
-            <p class="font-mono text-sm text-accent" data-reveal>01.</p>
-            <h2 class="mt-2 text-3xl font-semibold text-ink" data-reveal>{entry.data.title}</h2>
+            <h2
+              class="text-3xl font-semibold tracking-[-0.025em] text-ink sm:text-4xl"
+              data-reveal
+            >
+              {entry.data.title}
+            </h2>
             <p class="mt-6 text-xl leading-relaxed text-ink" data-reveal>{entry.data.lead}</p>
-            <div class="mt-6 leading-relaxed text-muted" data-reveal>
+            <div class="mt-6 leading-relaxed text-ink-muted" data-reveal>
               <Content />
             </div>
           </div>

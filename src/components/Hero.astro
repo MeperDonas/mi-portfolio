@@ -11,47 +11,30 @@ interface Props {
 const { locale, name, role, hidden } = Astro.props;
 
 const status = locale === 'es' ? '> disponible para trabajar' : '> available for work';
+const cta = locale === 'es' ? 'Contactar' : 'Get in touch';
 ---
 
 <section
   data-locale={locale}
-  class="relative flex min-h-[80vh] items-center justify-center overflow-hidden px-6"
+  class="flex min-h-[85vh] items-center justify-center px-6"
   hidden={hidden || undefined}
 >
-  <div
-    aria-hidden="true"
-    class="hero-glow pointer-events-none absolute left-1/2 top-1/3 -ml-56 -mt-56 h-[28rem] w-[28rem] rounded-full bg-accent/10 blur-3xl"
-  >
-  </div>
-
-  <div class="relative max-w-3xl text-center">
-    <p class="font-mono text-sm font-medium uppercase tracking-widest text-accent" data-reveal>
-      {role}
-    </p>
-    <h1 class="mt-4 font-mono text-5xl font-semibold tracking-tight text-ink sm:text-6xl" data-reveal>
-      {name}
-    </h1>
-    <p class="mt-6 font-mono text-sm text-faint" data-reveal>{status}</p>
-    <a
-      href="#about"
-      aria-label="Scroll to about"
-      data-magnetic
-      class="group mt-12 inline-flex flex-col items-center gap-2 text-faint transition-colors hover:text-accent"
+  <div class="max-w-3xl text-center">
+    <p class="text-[13px] font-medium tracking-[0.4px] text-ink-subtle" data-reveal>{role}</p>
+    <h1
+      class="mt-5 text-5xl font-semibold tracking-[-0.03em] text-ink sm:text-6xl"
       data-reveal
     >
-      <span class="font-mono text-xs uppercase tracking-widest">scroll</span>
-      <svg
-        class="h-5 w-5 animate-bounce"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        aria-hidden="true"
+      {name}
+    </h1>
+    <p class="mt-6 font-mono text-[13px] text-ink-subtle" data-reveal>{status}</p>
+    <div class="mt-10" data-reveal>
+      <a
+        href="#contact"
+        class="inline-flex items-center justify-center rounded-md bg-primary px-3.5 py-2 text-sm font-medium text-on-primary transition-colors hover:bg-primary-hover active:bg-primary-focus"
       >
-        <path d="M6 9l6 6 6-6"></path>
-      </svg>
-    </a>
+        {cta}
+      </a>
+    </div>
   </div>
 </section>
