@@ -88,12 +88,14 @@ if (deckSections.length > 0) {
     const isWindow = scroller === null;
     const containerTop = isWindow ? 0 : scroller.getBoundingClientRect().top;
     const containerHeight = isWindow ? window.innerHeight : scroller.clientHeight;
-    const bandTop = containerTop + containerHeight * 0.25;
+    const bandTop = containerHeight * 0.25;
 
     let current: HTMLElement | null = null;
     for (const section of deckSections) {
-      const sectionTop =
-        section.getBoundingClientRect().top + (isWindow ? 0 : scroller.scrollTop - containerTop);
+      // Viewport-relative position of the section top within the scroller.
+      // rect.top alone is scroll-dependent; subtracting containerTop makes the
+      // comparison stable as the deck scrolls.
+      const sectionTop = section.getBoundingClientRect().top - containerTop;
       if (sectionTop <= bandTop) current = section;
     }
     setActiveSection(current ?? deckSections[0]);
