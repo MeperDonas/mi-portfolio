@@ -1,0 +1,29 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --color-ink: #0f172a;
+  --color-muted: #64748b;
+  --color-paper: #ffffff;
+  --color-accent: #0d9488;
+  --color-line: #e2e8f0;
+  --spacing-section: 6rem;
+}
+
+@layer base {
+  html {
+    font-family: var(--font-sans);
+    color: var(--color-ink);
+    background-color: var(--color-paper);
+    scroll-behavior: smooth;
+    /* Keeps anchored sections clear of the sticky header. */
+    scroll-padding-top: 5rem;
+  }
+
+  /* The i18n toggle flips `hidden` on `[data-locale]` nodes; make sure the
+     attribute always wins over layout display utilities (e.g. `md:flex`). */
+  [hidden] {
+    display: none !important;
+  }
+}
