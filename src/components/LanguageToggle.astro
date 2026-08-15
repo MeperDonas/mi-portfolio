@@ -1,0 +1,15 @@
+---
+// Presentational ES/EN switch. The page-level i18n script binds to the
+// `[data-locale-toggle]` button and flips the `[data-locale]` labels below,
+// so this component owns no state and imports no logic.
+---
+
+<button
+  type="button"
+  data-locale-toggle
+  aria-label="Toggle language"
+  class="rounded-full border border-line px-3 py-1 text-xs font-semibold uppercase tracking-wide text-muted transition-colors hover:border-accent hover:text-accent"
+>
+  <span data-locale="es">ES</span>
+  <span data-locale="en" hidden>EN</span>
+</button>

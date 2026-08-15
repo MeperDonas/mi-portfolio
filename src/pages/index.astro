@@ -1,0 +1,175 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Hero from '../components/Hero.astro';
+import About from '../components/About.astro';
+import Experience from '../components/Experience.astro';
+import Projects from '../components/Projects.astro';
+import Certifications from '../components/Certifications.astro';
+import Contact from '../components/Contact.astro';
+import {
+  getAbout,
+  getCertifications,
+  getExperience,
+  getProjects,
+  getSite,
+} from '../lib/content';
+
+const [
+  aboutEs,
+  aboutEn,
+  experienceEs,
+  experienceEn,
+  projectsEs,
+  projectsEn,
+  certificationsEs,
+  certificationsEn,
+  siteEs,
+  siteEn,
+] = await Promise.all([
+  getAbout('es'),
+  getAbout('en'),
+  getExperience('es'),
+  getExperience('en'),
+  getProjects('es'),
+  getProjects('en'),
+  getCertifications('es'),
+  getCertifications('en'),
+  getSite('es'),
+  getSite('en'),
+]);
+
+const es = siteEs[0];
+const en = siteEn[0];
+
+const brand = es.data.name;
+const title = `${brand} — ${es.data.role}`;
+const description = es.data.role;
+
+// Empty-shell suppression (spec REQ-01 "Empty section"): each locale's section
+// block renders only when that locale has at least one entry. The outer anchor
+// wrapper renders only when at least one locale has content.
+const hasAboutEs = aboutEs.length > 0;
+const hasAboutEn = aboutEn.length > 0;
+const hasExperienceEs = experienceEs.length > 0;
+const hasExperienceEn = experienceEn.length > 0;
+const hasProjectsEs = projectsEs.length > 0;
+const hasProjectsEn = projectsEn.length > 0;
+const hasCertificationsEs = certificationsEs.length > 0;
+const hasCertificationsEn = certificationsEn.length > 0;
+---
+
+<Base title={title} description={description}>
+  <Header brand={brand} nav={{ es: es.data.nav, en: en.data.nav }} />
+
+  <main>
+    <div id="top">
+      <Hero locale="es" name={es.data.name} role={es.data.role} />
+      <Hero locale="en" name={en.data.name} role={en.data.role} hidden />
+    </div>
+
+    {(hasAboutEs || hasAboutEn) && (
+      <div id="about">
+        {hasAboutEs && <About locale="es" entries={aboutEs} />}
+        {hasAboutEn && <About locale="en" entries={aboutEn} hidden />}
+      </div>
+    )}
+
+    {(hasExperienceEs || hasExperienceEn) && (
+      <div id="experience">
+        {hasExperienceEs && (
+          <Experience
+            locale="es"
+            title={es.data.nav.experience}
+            presentLabel="Actualidad"
+            entries={experienceEs}
+          />
+        )}
+        {hasExperienceEn && (
+          <Experience
+            locale="en"
+            title={en.data.nav.experience}
+            presentLabel="Present"
+            entries={experienceEn}
+            hidden
+          />
+        )}
+      </div>
+    )}
+
+    {(hasProjectsEs || hasProjectsEn) && (
+      <div id="projects">
+        {hasProjectsEs && <Projects locale="es" title={es.data.nav.projects} entries={projectsEs} />}
+        {hasProjectsEn && <Projects locale="en" title={en.data.nav.projects} entries={projectsEn} hidden />}
+      </div>
+    )}
+
+    {(hasCertificationsEs || hasCertificationsEn) && (
+      <div id="certifications">
+        {hasCertificationsEs && (
+          <Certifications
+            locale="es"
+            title={es.data.nav.certifications}
+            entries={certificationsEs}
+          />
+        )}
+        {hasCertificationsEn && (
+          <Certifications
+            locale="en"
+            title={en.data.nav.certifications}
+            entries={certificationsEn}
+            hidden
+          />
+        )}
+      </div>
+    )}
+
+    <div id="contact">
+      <Contact
+        locale="es"
+        title={es.data.nav.contact}
+        email={es.data.email}
+        linkedin={es.data.linkedin}
+        github={es.data.github}
+      />
+      <Contact
+        locale="en"
+        title={en.data.nav.contact}
+        email={en.data.email}
+        linkedin={en.data.linkedin}
+        github={en.data.github}
+        hidden
+      />
+    </div>
+  </main>
+</Base>
+
+<script>
+  import {
+    browserLocaleStorage,
+    persistLocale,
+    resolveLocale,
+    toggleLocale,
+    type Locale,
+  } from '../lib/i18n';
+
+  const storage = browserLocaleStorage();
+  let current = resolveLocale(storage);
+
+  function applyLocale(locale: Locale) {
+    document.documentElement.lang = locale;
+    for (const el of document.querySelectorAll<HTMLElement>('[data-locale]')) {
+      el.hidden = el.getAttribute('data-locale') !== locale;
+    }
+  }
+
+  applyLocale(current);
+
+  for (const button of document.querySelectorAll('[data-locale-toggle]')) {
+    button.addEventListener('click', () => {
+      current = toggleLocale(current);
+      persistLocale(storage, current);
+      applyLocale(current);
+    });
+  }
+</script>
