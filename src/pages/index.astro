@@ -75,18 +75,25 @@ const availableNavSections = navSections.filter((section) => section.available).
     right column is a snap-scroll deck. On lg+ the page does not free-scroll
     (h-screen + overflow-hidden), only the deck scrolls internally. Below lg the
     two stack and the page scrolls naturally.
+
+    The grid row must be an explicit minmax(0,1fr) track: with an auto row the
+    lg:h-full children resolve against a circular height (content-sized), the
+    deck never overflows internally and main clips it to one viewport with no
+    scroll. minmax(0,1fr) gives a definite 100vh row so the deck really scrolls.
   -->
-  <main class="mx-auto max-w-7xl lg:grid lg:h-screen lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:gap-20 lg:overflow-hidden">
+  <main
+    class="mx-auto max-w-7xl lg:grid lg:h-screen lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:grid-rows-[minmax(0,1fr)] lg:gap-20 lg:overflow-hidden"
+  >
     <!-- Identity + nav column: content aligned to the top. -->
     <aside class="flex flex-col px-6 pb-8 pt-8 lg:h-full lg:overflow-y-auto lg:px-10 lg:py-14 lg:pb-10">
       <div class="flex items-center justify-between">
         <a
           href="#top"
           data-scroll-top
-          class="flex items-center gap-2.5 text-[15px] font-medium text-ink"
+          aria-label="Top"
+          class="flex items-center justify-center text-ink transition-opacity duration-200 hover:opacity-80"
         >
-          <span aria-hidden="true" class="inline-block h-3.5 w-3.5 rounded-xs bg-primary"></span>
-          {brand}
+          <span aria-hidden="true" class="inline-block h-3.5 w-3.5 rounded-full bg-primary"></span>
         </a>
         <LanguageToggle />
       </div>
@@ -125,7 +132,7 @@ const availableNavSections = navSections.filter((section) => section.available).
         <div
           id="about"
           data-section
-          class="deck-section lg:flex lg:min-h-full lg:flex-col lg:justify-center lg:[scroll-snap-align:start] lg:[scroll-snap-stop:always]"
+          class="deck-section lg:flex lg:min-h-full lg:flex-col lg:[scroll-snap-align:start] lg:[scroll-snap-stop:always]"
         >
           {hasAboutEs && <About locale="es" entries={aboutEs} />}
           {hasAboutEn && <About locale="en" entries={aboutEn} hidden />}
@@ -136,7 +143,7 @@ const availableNavSections = navSections.filter((section) => section.available).
         <div
           id="experience"
           data-section
-          class="deck-section lg:flex lg:min-h-full lg:flex-col lg:justify-center lg:[scroll-snap-align:start] lg:[scroll-snap-stop:always]"
+          class="deck-section lg:flex lg:min-h-full lg:flex-col lg:[scroll-snap-align:start] lg:[scroll-snap-stop:always]"
         >
           {hasExperienceEs && (
             <Experience
@@ -162,7 +169,7 @@ const availableNavSections = navSections.filter((section) => section.available).
         <div
           id="projects"
           data-section
-          class="deck-section lg:flex lg:min-h-full lg:flex-col lg:justify-center lg:[scroll-snap-align:start] lg:[scroll-snap-stop:always]"
+          class="deck-section lg:flex lg:min-h-full lg:flex-col lg:[scroll-snap-align:start] lg:[scroll-snap-stop:always]"
         >
           {hasProjectsEs && <Projects locale="es" title={es.data.nav.projects} entries={projectsEs} />}
           {hasProjectsEn && <Projects locale="en" title={en.data.nav.projects} entries={projectsEn} hidden />}
@@ -173,7 +180,7 @@ const availableNavSections = navSections.filter((section) => section.available).
         <div
           id="certifications"
           data-section
-          class="deck-section lg:flex lg:min-h-full lg:flex-col lg:justify-center lg:[scroll-snap-align:start] lg:[scroll-snap-stop:always]"
+          class="deck-section lg:flex lg:min-h-full lg:flex-col lg:[scroll-snap-align:start] lg:[scroll-snap-stop:always]"
         >
           {hasCertificationsEs && (
             <Certifications

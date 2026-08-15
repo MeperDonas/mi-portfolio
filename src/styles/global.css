@@ -37,6 +37,18 @@
     scroll-behavior: smooth;
   }
 
+  /* Hide scrollbars everywhere (page + internal deck scroller) while keeping
+     scroll functional. The deck is snap-driven so the visible bar adds nothing;
+     a hidden bar keeps the split layout clean. */
+  * {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  *::-webkit-scrollbar {
+    display: none;
+  }
+
   :focus-visible {
     outline: 2px solid var(--color-primary);
     outline-offset: 2px;
@@ -96,8 +108,14 @@
 }
 
 /* Deck sections vertically center their content; tone down the components'
-   generous py-section so centered content stays comfortably within the viewport. */
+   generous py-section so centered content stays comfortably within the viewport.
+   `safe center` falls back to start-aligned when a section is taller than the
+   viewport, so its top is never clipped by flex centering. */
 @media (min-width: 1024px) {
+  .deck-section {
+    justify-content: safe center;
+  }
+
   .deck-section > section {
     width: 100%;
     padding-block: 3rem;
