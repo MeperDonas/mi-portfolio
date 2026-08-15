@@ -40,6 +40,7 @@ export const siteSchema = z.object({
   email: z.string().email(),
   linkedin: z.string().url(),
   github: z.string().url(),
+  cv: z.string().optional(),
   nav: z.object({
     about: z.string(),
     experience: z.string(),

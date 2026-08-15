@@ -8,10 +8,15 @@ interface Props {
   email: string;
   linkedin: string;
   github: string;
+  cv?: string;
   hidden?: boolean;
 }
 
-const { locale, name, role, email, linkedin, github, hidden } = Astro.props;
+const { locale, name, role, email, linkedin, github, cv, hidden } = Astro.props;
+
+const cvLabel = locale === 'es' ? 'Ver CV' : 'View CV';
+const cvFrameTitle = locale === 'es' ? 'Curriculum Vitae' : 'Resume';
+const cvDownloadLabel = locale === 'es' ? 'Descargar CV' : 'Download CV';
 ---
 
 <div data-locale={locale} hidden={hidden || undefined} class="flex flex-col items-center text-center">
@@ -87,5 +92,77 @@ const { locale, name, role, email, linkedin, github, hidden } = Astro.props;
         <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"></path>
       </svg>
     </a>
+    {cv && (
+      <button
+        type="button"
+        data-cv-open
+        aria-label={cvLabel}
+        class="group text-ink-subtle transition-colors duration-200 hover:text-primary-hover"
+      >
+        <svg
+          class="h-7 w-7 transition-transform duration-150 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:scale-125 group-hover:drop-shadow-[0_0_10px_rgba(94,106,210,0.5)]"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <path d="M14 2v6h6"></path>
+          <path d="M9 13h6M9 17h4"></path>
+        </svg>
+      </button>
+    )}
   </div>
+
+  {cv && (
+    <div data-cv-modal class="cv-modal" hidden>
+      <div class="cv-modal-backdrop" data-cv-close></div>
+      <div class="cv-modal-panel" role="dialog" aria-modal="true" aria-label={cvFrameTitle}>
+        <div class="cv-modal-bar">
+          <span class="cv-modal-title">{cvFrameTitle}</span>
+          <div class="cv-modal-actions">
+            <a
+              href={cv}
+              download
+              aria-label={cvDownloadLabel}
+              class="cv-modal-icon"
+            >
+              <svg
+                class="h-4 w-4"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <path d="M7 10l5 5 5-5"></path>
+                <path d="M12 15V3"></path>
+              </svg>
+            </a>
+            <button type="button" data-cv-close aria-label="Close" class="cv-modal-icon">
+              <svg
+                class="h-4 w-4"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M18 6L6 18M6 6l12 12"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <iframe src={cv} title={cvFrameTitle} class="cv-modal-frame" loading="lazy"></iframe>
+      </div>
+    </div>
+  )}
 </div>

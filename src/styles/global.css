@@ -110,6 +110,98 @@
   }
 }
 
+/* CV preview modal — Zellij-style floating pane with a lavender frame. */
+.cv-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.cv-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.72);
+}
+
+.cv-modal-panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: min(920px, 100%);
+  height: min(85vh, 100%);
+  overflow: hidden;
+  background: var(--color-surface-1);
+  border: 1px solid var(--color-primary);
+  border-radius: 12px;
+  box-shadow:
+    0 0 0 1px var(--color-canvas),
+    0 24px 80px rgba(0, 0, 0, 0.6),
+    0 0 40px rgba(94, 106, 210, 0.18);
+  animation: cv-pop 0.18s ease-out;
+}
+
+.cv-modal-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--color-hairline);
+  background: var(--color-canvas);
+}
+
+.cv-modal-title {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--color-ink-subtle);
+}
+
+.cv-modal-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.cv-modal-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 8px;
+  color: var(--color-ink-subtle);
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.cv-modal-icon:hover {
+  color: var(--color-primary-hover);
+  background: var(--color-surface-2);
+}
+
+.cv-modal-frame {
+  flex: 1;
+  width: 100%;
+  border: 0;
+  background: #ffffff;
+}
+
+@keyframes cv-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   [data-reveal] {
     opacity: 1;
@@ -124,6 +216,10 @@
   }
 
   .cursor-block {
+    animation: none;
+  }
+
+  .cv-modal-panel {
     animation: none;
   }
 }

@@ -1,5 +1,6 @@
 // Client-side DOM behavior: subtle scroll reveals, a mouse-reactive background
-// glow, and a terminal typewriter, all gated behind prefers-reduced-motion.
+// glow, a terminal typewriter, and the CV preview modal. Motion-heavy effects
+// are gated behind prefers-reduced-motion; the modal itself always works.
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 // --- Scroll reveals ---
@@ -89,3 +90,29 @@ if (!reducedMotion) {
     render();
   }
 }
+
+// --- CV preview modal ---
+for (const button of document.querySelectorAll<HTMLElement>('[data-cv-open]')) {
+  button.addEventListener('click', () => {
+    const scope = button.closest('[data-locale]');
+    const modal = scope?.querySelector<HTMLElement>('[data-cv-modal]');
+    if (!modal) return;
+    modal.hidden = false;
+    const closeBtn = modal.querySelector<HTMLElement>('[data-cv-close]');
+    closeBtn?.focus();
+  });
+}
+
+for (const el of document.querySelectorAll<HTMLElement>('[data-cv-close]')) {
+  el.addEventListener('click', () => {
+    const modal = el.closest<HTMLElement>('[data-cv-modal]');
+    if (modal) modal.hidden = true;
+  });
+}
+
+document.addEventListener('keydown', (event: KeyboardEvent) => {
+  if (event.key !== 'Escape') return;
+  for (const modal of document.querySelectorAll<HTMLElement>('[data-cv-modal]')) {
+    if (!modal.hidden) modal.hidden = true;
+  }
+});
