@@ -1,4 +1,4 @@
-# mi-portfolio
+# MeperFolio
 
 Personal landing page to showcase certifications, work experience, and personal projects.
 

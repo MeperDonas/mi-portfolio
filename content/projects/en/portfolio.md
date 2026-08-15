@@ -5,5 +5,5 @@ stack:
   - Astro
   - Tailwind CSS
   - TypeScript
-url: https://github.com/MeperDonas/mi-portfolio
+url: https://github.com/MeperDonas/MeperFolio
 ---
