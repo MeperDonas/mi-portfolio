@@ -1,0 +1,37 @@
+---
+import { render, type CollectionEntry } from 'astro:content';
+import type { Locale } from '../lib/i18n';
+
+interface Props {
+  locale: Locale;
+  entries: CollectionEntry<'about'>[];
+  hidden?: boolean;
+}
+
+const { locale, entries, hidden } = Astro.props;
+
+const rendered = await Promise.all(
+  entries.map(async (entry) => ({
+    entry,
+    Content: (await render(entry)).Content,
+  })),
+);
+---
+
+{entries.length > 0 && (
+<section data-locale={locale} class="py-section" hidden={hidden || undefined}>
+  <div class="mx-auto max-w-3xl px-6">
+    {
+      rendered.map(({ entry, Content }) => (
+        <div>
+          <h2 class="text-3xl font-bold text-ink">{entry.data.title}</h2>
+          <p class="mt-4 text-xl leading-relaxed text-muted">{entry.data.lead}</p>
+          <div class="mt-6 leading-relaxed text-ink/80">
+            <Content />
+          </div>
+        </div>
+      ))
+    }
+  </div>
+</section>
+)}

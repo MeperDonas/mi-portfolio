@@ -1,0 +1,30 @@
+---
+import type { Locale } from '../lib/i18n';
+
+interface Props {
+  locale: Locale;
+  name: string;
+  role: string;
+  hidden?: boolean;
+}
+
+const { locale, name, role, hidden } = Astro.props;
+---
+
+<section
+  data-locale={locale}
+  class="flex min-h-[80vh] items-center justify-center px-6"
+  hidden={hidden || undefined}
+>
+  <div class="max-w-3xl text-center">
+    <p class="text-sm font-medium uppercase tracking-widest text-accent">{role}</p>
+    <h1 class="mt-4 text-5xl font-bold tracking-tight text-ink sm:text-6xl">{name}</h1>
+    <a
+      href="#about"
+      aria-label="Scroll to about"
+      class="mt-10 inline-flex h-12 w-12 items-center justify-center rounded-full border border-line text-muted transition-colors hover:border-accent hover:text-accent"
+    >
+      ↓
+    </a>
+  </div>
+</section>

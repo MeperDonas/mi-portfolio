@@ -1,0 +1,51 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import type { Locale } from '../lib/i18n';
+
+interface Props {
+  locale: Locale;
+  title: string;
+  entries: CollectionEntry<'projects'>[];
+  hidden?: boolean;
+}
+
+const { locale, title, entries, hidden } = Astro.props;
+---
+
+{entries.length > 0 && (
+<section data-locale={locale} class="py-section" hidden={hidden || undefined}>
+  <div class="mx-auto max-w-5xl px-6">
+    <h2 class="text-3xl font-bold text-ink">{title}</h2>
+    <div class="mt-10 grid gap-6 sm:grid-cols-2">
+      {
+        entries.map((entry) => (
+          <article class="rounded-lg border border-line p-6 transition-colors hover:border-accent">
+            <div class="flex items-start justify-between gap-4">
+              <h3 class="text-lg font-semibold text-ink">{entry.data.title}</h3>
+              {entry.data.url && (
+                <a
+                  href={entry.data.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={entry.data.title}
+                  class="text-accent transition-colors hover:text-ink"
+                >
+                  ↗
+                </a>
+              )}
+            </div>
+            <p class="mt-2 text-sm leading-relaxed text-muted">{entry.data.description}</p>
+            <ul class="mt-4 flex flex-wrap gap-2">
+              {entry.data.stack.map((tech) => (
+                <li class="rounded-full bg-line px-3 py-1 text-xs font-medium text-muted">
+                  {tech}
+                </li>
+              ))}
+            </ul>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+)}

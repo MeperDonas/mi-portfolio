@@ -1,0 +1,50 @@
+---
+import LanguageToggle from './LanguageToggle.astro';
+import type { Locale } from '../lib/i18n';
+
+export interface NavLabels {
+  about: string;
+  experience: string;
+  projects: string;
+  certifications: string;
+  contact: string;
+}
+
+interface Props {
+  brand: string;
+  nav: Record<Locale, NavLabels>;
+}
+
+const { brand, nav } = Astro.props;
+
+const links: { href: string; key: keyof NavLabels }[] = [
+  { href: '#about', key: 'about' },
+  { href: '#experience', key: 'experience' },
+  { href: '#projects', key: 'projects' },
+  { href: '#certifications', key: 'certifications' },
+  { href: '#contact', key: 'contact' },
+];
+---
+
+<header class="sticky top-0 z-50 border-b border-line bg-paper/80 backdrop-blur">
+  <div class="mx-auto flex max-w-5xl items-center justify-between gap-4 px-6 py-4">
+    <a href="#top" class="text-lg font-semibold text-ink">{brand}</a>
+
+    <nav aria-label="Primary">
+      <ul class="flex items-center gap-6 text-sm font-medium text-muted">
+        {
+          links.map(({ href, key }) => (
+            <li class="hidden md:block">
+              <a href={href} class="transition-colors hover:text-ink">
+                <span data-locale="es">{nav.es[key]}</span>
+                <span data-locale="en" hidden>{nav.en[key]}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <LanguageToggle />
+  </div>
+</header>
