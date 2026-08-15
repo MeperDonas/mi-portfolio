@@ -9,5 +9,4 @@ nav:
   experience: Experience
   projects: Projects
   certifications: Certifications
-  contact: Contact
 ---

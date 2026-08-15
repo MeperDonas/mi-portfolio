@@ -9,5 +9,4 @@ nav:
   experience: Experiencia
   projects: Proyectos
   certifications: Certificaciones
-  contact: Contacto
 ---
