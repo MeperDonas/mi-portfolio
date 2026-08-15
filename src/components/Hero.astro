@@ -9,22 +9,49 @@ interface Props {
 }
 
 const { locale, name, role, hidden } = Astro.props;
+
+const status = locale === 'es' ? '> disponible para trabajar' : '> available for work';
 ---
 
 <section
   data-locale={locale}
-  class="flex min-h-[80vh] items-center justify-center px-6"
+  class="relative flex min-h-[80vh] items-center justify-center overflow-hidden px-6"
   hidden={hidden || undefined}
 >
-  <div class="max-w-3xl text-center">
-    <p class="text-sm font-medium uppercase tracking-widest text-accent">{role}</p>
-    <h1 class="mt-4 text-5xl font-bold tracking-tight text-ink sm:text-6xl">{name}</h1>
+  <div
+    aria-hidden="true"
+    class="hero-glow pointer-events-none absolute left-1/2 top-1/3 -ml-56 -mt-56 h-[28rem] w-[28rem] rounded-full bg-accent/10 blur-3xl"
+  >
+  </div>
+
+  <div class="relative max-w-3xl text-center">
+    <p class="font-mono text-sm font-medium uppercase tracking-widest text-accent" data-reveal>
+      {role}
+    </p>
+    <h1 class="mt-4 font-mono text-5xl font-semibold tracking-tight text-ink sm:text-6xl" data-reveal>
+      {name}
+    </h1>
+    <p class="mt-6 font-mono text-sm text-faint" data-reveal>{status}</p>
     <a
       href="#about"
       aria-label="Scroll to about"
-      class="mt-10 inline-flex h-12 w-12 items-center justify-center rounded-full border border-line text-muted transition-colors hover:border-accent hover:text-accent"
+      data-magnetic
+      class="group mt-12 inline-flex flex-col items-center gap-2 text-faint transition-colors hover:text-accent"
+      data-reveal
     >
-      ↓
+      <span class="font-mono text-xs uppercase tracking-widest">scroll</span>
+      <svg
+        class="h-5 w-5 animate-bounce"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M6 9l6 6 6-6"></path>
+      </svg>
     </a>
   </div>
 </section>

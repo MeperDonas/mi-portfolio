@@ -19,19 +19,20 @@ const rendered = await Promise.all(
 ---
 
 {entries.length > 0 && (
-<section data-locale={locale} class="py-section" hidden={hidden || undefined}>
-  <div class="mx-auto max-w-3xl px-6">
-    {
-      rendered.map(({ entry, Content }) => (
-        <div>
-          <h2 class="text-3xl font-bold text-ink">{entry.data.title}</h2>
-          <p class="mt-4 text-xl leading-relaxed text-muted">{entry.data.lead}</p>
-          <div class="mt-6 leading-relaxed text-ink/80">
-            <Content />
+  <section data-locale={locale} class="py-section" hidden={hidden || undefined}>
+    <div class="mx-auto max-w-3xl px-6">
+      {
+        rendered.map(({ entry, Content }) => (
+          <div>
+            <p class="font-mono text-sm text-accent" data-reveal>01.</p>
+            <h2 class="mt-2 text-3xl font-semibold text-ink" data-reveal>{entry.data.title}</h2>
+            <p class="mt-6 text-xl leading-relaxed text-ink" data-reveal>{entry.data.lead}</p>
+            <div class="mt-6 leading-relaxed text-muted" data-reveal>
+              <Content />
+            </div>
           </div>
-        </div>
-      ))
-    }
-  </div>
-</section>
+        ))
+      }
+    </div>
+  </section>
 )}

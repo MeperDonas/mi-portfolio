@@ -25,38 +25,39 @@ function period(start: string, end: string | undefined): string {
 ---
 
 {entries.length > 0 && (
-<section data-locale={locale} class="py-section" hidden={hidden || undefined}>
-  <div class="mx-auto max-w-3xl px-6">
-    <h2 class="text-3xl font-bold text-ink">{title}</h2>
-    <ol class="mt-10">
-      {
-        rendered.map(({ entry, Content }) => (
-          <li class="flex gap-6">
-            <div class="flex flex-col items-center">
-              <span class="mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full bg-accent"></span>
-              <span class="w-px flex-1 bg-line"></span>
-            </div>
-            <div class="pb-10">
-              <h3 class="text-lg font-semibold text-ink">{entry.data.role}</h3>
-              <p class="text-sm font-medium text-accent">{entry.data.company}</p>
-              <p class="mt-1 text-sm text-muted">
-                {period(entry.data.start, entry.data.end)}
-              </p>
-              <div class="mt-3 space-y-1 text-ink/80">
-                <Content />
+  <section data-locale={locale} class="py-section" hidden={hidden || undefined}>
+    <div class="mx-auto max-w-3xl px-6">
+      <p class="font-mono text-sm text-accent" data-reveal>02.</p>
+      <h2 class="mt-2 text-3xl font-semibold text-ink" data-reveal>{title}</h2>
+      <ol class="mt-10">
+        {
+          rendered.map(({ entry, Content }) => (
+            <li class="flex gap-6" data-reveal>
+              <div class="flex flex-col items-center">
+                <span class="mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full bg-accent"></span>
+                <span class="w-px flex-1 bg-line"></span>
               </div>
-              <ul class="mt-4 flex flex-wrap gap-2">
-                {entry.data.tags.map((tag) => (
-                  <li class="rounded-full bg-line px-3 py-1 text-xs font-medium text-muted">
-                    {tag}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </li>
-        ))
-      }
-    </ol>
-  </div>
-</section>
+              <div class="pb-10">
+                <h3 class="text-lg font-semibold text-ink">{entry.data.role}</h3>
+                <p class="mt-0.5 font-mono text-sm text-accent">{entry.data.company}</p>
+                <p class="mt-1 font-mono text-xs text-faint">
+                  {period(entry.data.start, entry.data.end)}
+                </p>
+                <div class="mt-3 space-y-1 text-muted">
+                  <Content />
+                </div>
+                <ul class="mt-4 flex flex-wrap gap-2">
+                  {entry.data.tags.map((tag) => (
+                    <li class="rounded-full border border-line px-3 py-1 font-mono text-xs text-muted">
+                      {tag}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
 )}

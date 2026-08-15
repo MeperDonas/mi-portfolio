@@ -1,29 +1,126 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 @import 'tailwindcss';
 
 @theme {
-  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
-  --color-ink: #0f172a;
-  --color-muted: #64748b;
-  --color-paper: #ffffff;
-  --color-accent: #0d9488;
-  --color-line: #e2e8f0;
+  --font-sans: 'Geist Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'Geist Mono Variable', ui-monospace, 'SFMono-Regular', monospace;
+
+  /* Semantic tokens — light (Catppuccin Latte) defaults */
+  --color-base: #eff1f5;
+  --color-surface: #e6e9ef;
+  --color-raised: #ccd0da;
+  --color-ink: #4c4f69;
+  --color-muted: #6c6f85;
+  --color-faint: #9ca0b0;
+  --color-line: #ccd0da;
+  --color-accent: #8839ef;
+
+  /* Full Catppuccin palette (Latte) */
+  --color-mauve: #8839ef;
+  --color-red: #d20f39;
+  --color-maroon: #e64553;
+  --color-peach: #fe640b;
+  --color-yellow: #df8e1d;
+  --color-green: #40a02b;
+  --color-teal: #179299;
+  --color-sky: #04a5e5;
+  --color-sapphire: #209fb5;
+  --color-blue: #1e66f5;
+  --color-lavender: #7287fd;
+  --color-pink: #ea76cb;
+  --color-flamingo: #dd7878;
+  --color-rosewater: #dc8a78;
+
   --spacing-section: 6rem;
+}
+
+/* Dark (Catppuccin Mocha) overrides */
+[data-theme='dark'] {
+  --color-base: #1e1e2e;
+  --color-surface: #181825;
+  --color-raised: #313244;
+  --color-ink: #cdd6f4;
+  --color-muted: #a6adc8;
+  --color-faint: #6c7086;
+  --color-line: #313244;
+  --color-accent: #cba6f7;
+
+  --color-mauve: #cba6f7;
+  --color-red: #f38ba8;
+  --color-maroon: #eba0ac;
+  --color-peach: #fab387;
+  --color-yellow: #f9e2af;
+  --color-green: #a6e3a1;
+  --color-teal: #94e2d5;
+  --color-sky: #89dceb;
+  --color-sapphire: #74c7ec;
+  --color-blue: #89b4fa;
+  --color-lavender: #b4befe;
+  --color-pink: #f5c2e7;
+  --color-flamingo: #f2cdcd;
+  --color-rosewater: #f5e0dc;
 }
 
 @layer base {
   html {
     font-family: var(--font-sans);
     color: var(--color-ink);
-    background-color: var(--color-paper);
+    background-color: var(--color-base);
     scroll-behavior: smooth;
     /* Keeps anchored sections clear of the sticky header. */
     scroll-padding-top: 5rem;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    letter-spacing: -0.02em;
   }
 
   /* The i18n toggle flips `hidden` on `[data-locale]` nodes; make sure the
      attribute always wins over layout display utilities (e.g. `md:flex`). */
   [hidden] {
     display: none !important;
+  }
+}
+
+/* Scroll reveal (driven by IntersectionObserver in src/scripts/app.ts). */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(16px);
+  transition:
+    opacity 0.6s ease,
+    transform 0.6s ease;
+}
+
+[data-reveal].is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Theme toggle icons: light shows the moon (switch to dark), dark shows the sun. */
+.theme-icon--moon {
+  display: block;
+}
+
+.theme-icon--sun {
+  display: none;
+}
+
+[data-theme='dark'] .theme-icon--sun {
+  display: block;
+}
+
+[data-theme='dark'] .theme-icon--moon {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
   }
 }
