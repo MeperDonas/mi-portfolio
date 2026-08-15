@@ -7,6 +7,5 @@ stack:
   - PostgreSQL
   - Prisma
   - TypeScript
+url: https://github.com/MeperDonas/gestion-inventario-app
 ---
-
-https://github.com/MeperDonas/gestion-inventario-app

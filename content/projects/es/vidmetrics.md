@@ -1,9 +1,10 @@
 ---
-title: Mi Portfolio
-description: Personal landing page showcasing certifications, work experience, and personal projects.
+title: VidMetrics Pulse
+description: Herramienta de análisis de la competencia en YouTube con métricas de interacción, detección de tendencias y puntuación del rendimiento.
 stack:
-  - Astro
+  - Next.js
   - TypeScript
+  - Tailwind CSS
+  - Recharts
+url: https://github.com/MeperDonas/vidmetrics-pulse-app
 ---
-
-https://github.com/MeperDonas/mi-portfolio

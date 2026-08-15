@@ -5,7 +5,5 @@ stack:
   - Astro
   - Tailwind CSS
   - TypeScript
-url: https://example.com
+url: https://mi-portfolio-ten-woad.vercel.app/
 ---
-
-https://mi-portfolio-ten-woad.vercel.app/
