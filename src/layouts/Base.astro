@@ -19,22 +19,8 @@ const { title, description } = Astro.props;
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
     {description && <meta name="description" content={description} />}
-    <script is:inline>
-      (function () {
-        try {
-          var theme = localStorage.getItem('theme');
-          if (theme === 'light' || theme === 'dark') {
-            document.documentElement.dataset.theme = theme;
-          } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            document.documentElement.dataset.theme = 'dark';
-          }
-        } catch (e) {
-          /* storage or matchMedia unavailable — keep default light */
-        }
-      })();
-    </script>
   </head>
-  <body class="bg-base text-ink antialiased">
+  <body class="bg-canvas text-ink antialiased">
     <slot />
     <script>
       import '../scripts/app';
