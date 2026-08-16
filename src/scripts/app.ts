@@ -1,5 +1,5 @@
 // Client-side DOM behavior:
-//  - left identity column: subtle scroll reveals on load
+//  - left identity column: staggered load cascade via IntersectionObserver
 //  - right section deck: active-section tracking, staggered in/out reveals,
 //    sliding nav indicator + active link, smooth anchor scrolling
 //  - mouse-reactive background glow, terminal typewriter, CV preview modal
@@ -12,6 +12,15 @@ const deckSections = Array.from(document.querySelectorAll<HTMLElement>('[data-se
 const heroReveals = Array.from(document.querySelectorAll<HTMLElement>('[data-reveal]')).filter(
   (el) => !el.closest('[data-section]'),
 );
+
+// Hero load cascade: each identity-column item reveals a little after the
+// previous one on first paint (the observer fires immediately for above-the-
+// fold content). Skipped under reduced motion; CSS flattens everything there.
+if (!reducedMotion) {
+  heroReveals.forEach((el, i) => {
+    el.style.setProperty('--reveal-delay', `${Math.min(i * 80, 480)}ms`);
+  });
+}
 
 if (!reducedMotion && 'IntersectionObserver' in window) {
   const observer = new IntersectionObserver(
@@ -193,6 +202,9 @@ if (termEls.length > 0) {
 }
 
 // --- Mouse-reactive background glow (lerped follow) ---
+// Kept deliberately subtle: small radius, low alpha, slow lerp. The rAF loop
+// only runs while the pointer is actually moving and parks itself once the
+// glow settles, so an idle page costs zero frames.
 if (!reducedMotion) {
   const glow = document.querySelector<HTMLElement>('.mouse-glow');
   if (glow) {
@@ -200,21 +212,25 @@ if (!reducedMotion) {
     let targetY = window.innerHeight / 2;
     let x = targetX;
     let y = targetY;
+    let rafId: number | null = null;
     const render = () => {
-      x += (targetX - x) * 0.08;
-      y += (targetY - y) * 0.08;
-      glow.style.background = `radial-gradient(500px circle at ${x.toFixed(1)}px ${y.toFixed(1)}px, rgba(94, 106, 210, 0.07), transparent 65%)`;
-      requestAnimationFrame(render);
+      x += (targetX - x) * 0.06;
+      y += (targetY - y) * 0.06;
+      glow.style.background = `radial-gradient(420px circle at ${x.toFixed(1)}px ${y.toFixed(1)}px, rgba(94, 106, 210, 0.05), transparent 65%)`;
+      rafId =
+        Math.abs(targetX - x) > 0.5 || Math.abs(targetY - y) > 0.5
+          ? requestAnimationFrame(render)
+          : null;
     };
     window.addEventListener(
       'pointermove',
       (event: PointerEvent) => {
         targetX = event.clientX;
         targetY = event.clientY;
+        if (rafId === null) rafId = requestAnimationFrame(render);
       },
       { passive: true },
     );
-    render();
   }
 }
 

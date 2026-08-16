@@ -4,32 +4,31 @@ import type { Locale } from '../lib/i18n';
 
 interface Props {
   locale: Locale;
+  index: string;
   title: string;
   entries: CollectionEntry<'projects'>[];
   hidden?: boolean;
 }
 
-const { locale, title, entries, hidden } = Astro.props;
+const { locale, index, title, entries, hidden } = Astro.props;
 ---
 
 {entries.length > 0 && (
   <section data-locale={locale} class="py-section" hidden={hidden || undefined}>
     <div class="px-6">
-      <h2
-        class="text-3xl font-semibold tracking-tight[-0.025em] text-ink sm:text-4xl"
-        data-reveal
-      >
+      <p class="section-eyebrow" data-reveal>{index}</p>
+      <h2 class="mt-4 text-display-md text-ink" data-reveal>
         {title}
       </h2>
-      <div class="mt-10 grid gap-6 sm:grid-cols-2">
+      <div class="mt-12 grid gap-6 sm:grid-cols-2">
         {
           entries.map((entry) => (
             <article
-              class="flex aspect-4/5 flex-col rounded-lg border border-hairline bg-surface-1 p-6 transition-colors hover:bg-surface-2"
+              class="card group flex aspect-4/5 flex-col"
               data-reveal
             >
               <div class="flex items-start justify-between gap-4">
-                <h3 class="text-[22px] font-medium tracking-[-0.4px] text-ink">
+                <h3 class="text-card-title text-ink">
                   {entry.data.title}
                 </h3>
                 {entry.data.url && (
@@ -38,10 +37,10 @@ const { locale, title, entries, hidden } = Astro.props;
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={entry.data.title}
-                    class="text-ink-subtle transition-colors hover:text-primary"
+                    class="group/link -m-1 rounded-sm p-1 text-ink-subtle transition-colors duration-200 hover:text-primary"
                   >
                     <svg
-                      class="h-4 w-4"
+                      class="h-4 w-4 transition-transform duration-200 ease-out-expo group-hover/link:-translate-y-0.5 group-hover/link:translate-x-0.5"
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"
@@ -55,12 +54,10 @@ const { locale, title, entries, hidden } = Astro.props;
                   </a>
                 )}
               </div>
-              <p class="mt-2 text-sm leading-relaxed text-ink-muted">{entry.data.description}</p>
+              <p class="mt-3 text-sm leading-relaxed text-ink-muted">{entry.data.description}</p>
               <ul class="mt-auto flex flex-wrap gap-2 pt-6">
                 {entry.data.stack.map((tech) => (
-                  <li class="rounded-sm border border-hairline px-2.5 py-1 text-[12px] text-ink-muted">
-                    {tech}
-                  </li>
+                  <li class="tag">{tech}</li>
                 ))}
               </ul>
             </article>

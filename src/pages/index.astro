@@ -67,6 +67,14 @@ const navSections: { id: string; key: 'about' | 'experience' | 'projects' | 'cer
   { id: 'certifications', key: 'certifications', available: hasCertificationsEs || hasCertificationsEn },
 ];
 const availableNavSections = navSections.filter((section) => section.available).map(({ id, key }) => ({ id, key }));
+
+// Chapter numbers for the section eyebrows (01, 02, …), following deck order.
+// Locale-independent, so they work for both copies without touching content.
+const sectionIndex = new Map(availableNavSections.map(({ id }, i) => [id, String(i + 1).padStart(2, '0')]));
+
+const year = new Date().getFullYear();
+const cvFileEs = es.data.cv?.split('/').pop() ?? '';
+const cvFileEn = en.data.cv?.split('/').pop() ?? '';
 ---
 
 <Base title={title} description={description}>
@@ -146,8 +154,8 @@ const availableNavSections = navSections.filter((section) => section.available).
           data-section
           class="deck-section lg:flex lg:min-h-full lg:flex-col lg:[scroll-snap-align:start] lg:[scroll-snap-stop:always]"
         >
-          {hasAboutEs && <About locale="es" entries={aboutEs} />}
-          {hasAboutEn && <About locale="en" entries={aboutEn} hidden />}
+          {hasAboutEs && <About locale="es" index={sectionIndex.get('about') ?? '01'} entries={aboutEs} />}
+          {hasAboutEn && <About locale="en" index={sectionIndex.get('about') ?? '01'} entries={aboutEn} hidden />}
         </div>
       )}
 
@@ -160,6 +168,7 @@ const availableNavSections = navSections.filter((section) => section.available).
           {hasExperienceEs && (
             <Experience
               locale="es"
+              index={sectionIndex.get('experience') ?? '02'}
               title={es.data.nav.experience}
               presentLabel="Actualidad"
               entries={experienceEs}
@@ -168,6 +177,7 @@ const availableNavSections = navSections.filter((section) => section.available).
           {hasExperienceEn && (
             <Experience
               locale="en"
+              index={sectionIndex.get('experience') ?? '02'}
               title={en.data.nav.experience}
               presentLabel="Present"
               entries={experienceEn}
@@ -183,8 +193,8 @@ const availableNavSections = navSections.filter((section) => section.available).
           data-section
           class="deck-section lg:flex lg:min-h-full lg:flex-col lg:[scroll-snap-align:start] lg:[scroll-snap-stop:always]"
         >
-          {hasProjectsEs && <Projects locale="es" title={es.data.nav.projects} entries={projectsEs} />}
-          {hasProjectsEn && <Projects locale="en" title={en.data.nav.projects} entries={projectsEn} hidden />}
+          {hasProjectsEs && <Projects locale="es" index={sectionIndex.get('projects') ?? '03'} title={es.data.nav.projects} entries={projectsEs} />}
+          {hasProjectsEn && <Projects locale="en" index={sectionIndex.get('projects') ?? '03'} title={en.data.nav.projects} entries={projectsEn} hidden />}
         </div>
       )}
 
@@ -197,6 +207,7 @@ const availableNavSections = navSections.filter((section) => section.available).
           {hasCertificationsEs && (
             <Certifications
               locale="es"
+              index={sectionIndex.get('certifications') ?? '04'}
               title={es.data.nav.certifications}
               entries={certificationsEs}
             />
@@ -204,6 +215,7 @@ const availableNavSections = navSections.filter((section) => section.available).
           {hasCertificationsEn && (
             <Certifications
               locale="en"
+              index={sectionIndex.get('certifications') ?? '04'}
               title={en.data.nav.certifications}
               entries={certificationsEn}
               hidden
@@ -211,6 +223,24 @@ const availableNavSections = navSections.filter((section) => section.available).
           )}
         </div>
       )}
+
+      <!-- Colophon: closes the deck on lg+ (own snap point at its end edge) and
+           the page on mobile. Both locale copies follow the data-locale pattern. -->
+      <footer class="px-6 lg:[scroll-snap-align:end]">
+        <div
+          class="flex flex-col gap-3 border-t border-hairline pb-14 pt-8 sm:flex-row sm:items-center sm:justify-between"
+          data-reveal
+        >
+          <p class="text-xs text-ink-subtle">
+            <span data-locale="es">© {year} {es.data.name}. Diseñado y desarrollado con Astro y Tailwind CSS.</span>
+            <span data-locale="en" hidden>© {year} {en.data.name}. Designed and built with Astro and Tailwind CSS.</span>
+          </p>
+          <a href={`mailto:${es.data.email}`} class="link-underline w-fit text-xs font-medium text-ink-subtle">
+            <span data-locale="es">{es.data.nav.contact}</span>
+            <span data-locale="en" hidden>{en.data.nav.contact}</span>
+          </a>
+        </div>
+      </footer>
     </div>
   </main>
 
@@ -218,6 +248,23 @@ const availableNavSections = navSections.filter((section) => section.available).
     <div data-cv-modal data-cv-locale="es" class="cv-modal" hidden>
       <div class="cv-modal-backdrop" data-cv-close></div>
       <div class="cv-modal-panel">
+        <div class="cv-modal-titlebar">
+          <span>{cvFileEs}</span>
+          <button type="button" data-cv-close aria-label="Close CV preview" class="cv-modal-close">
+            <svg
+              class="h-3.5 w-3.5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M18 6 6 18M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
         <iframe
           src={`${es.data.cv}#navpanes=0&view=FitH`}
           title="Curriculum Vitae"
@@ -231,6 +278,23 @@ const availableNavSections = navSections.filter((section) => section.available).
     <div data-cv-modal data-cv-locale="en" class="cv-modal" hidden>
       <div class="cv-modal-backdrop" data-cv-close></div>
       <div class="cv-modal-panel">
+        <div class="cv-modal-titlebar">
+          <span>{cvFileEn}</span>
+          <button type="button" data-cv-close aria-label="Close CV preview" class="cv-modal-close">
+            <svg
+              class="h-3.5 w-3.5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M18 6 6 18M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
         <iframe
           src={`${en.data.cv}#navpanes=0&view=FitH`}
           title="Resume"

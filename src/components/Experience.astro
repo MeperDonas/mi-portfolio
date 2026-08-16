@@ -4,13 +4,14 @@ import type { Locale } from '../lib/i18n';
 
 interface Props {
   locale: Locale;
+  index: string;
   title: string;
   presentLabel: string;
   entries: CollectionEntry<'experience'>[];
   hidden?: boolean;
 }
 
-const { locale, title, presentLabel, entries, hidden } = Astro.props;
+const { locale, index, title, presentLabel, entries, hidden } = Astro.props;
 
 const rendered = await Promise.all(
   entries.map(async (entry) => ({
@@ -27,36 +28,32 @@ function period(start: string, end: string | undefined): string {
 {entries.length > 0 && (
   <section data-locale={locale} class="py-section" hidden={hidden || undefined}>
     <div class="mx-auto max-w-3xl px-6">
-      <h2
-        class="text-3xl font-semibold tracking-tight[-0.025em] text-ink sm:text-4xl"
-        data-reveal
-      >
+      <p class="section-eyebrow" data-reveal>{index}</p>
+      <h2 class="mt-4 text-display-md text-ink" data-reveal>
         {title}
       </h2>
-      <ol class="mt-10">
+      <ol class="mt-12">
         {
           rendered.map(({ entry, Content }) => (
             <li class="flex gap-6" data-reveal>
               <div class="flex flex-col items-center">
                 <span class="timeline-dot mt-2 h-2 w-2 shrink-0 rounded-full bg-primary"></span>
-                <span class="timeline-line w-px flex-1 bg-hairline"></span>
+                <span class="timeline-line w-px flex-1"></span>
               </div>
-              <div class="pb-10">
-                <h3 class="text-[22px] font-medium tracking-[-0.4px] text-ink">
+              <div class="pb-12">
+                <h3 class="text-card-title text-ink">
                   {entry.data.role}
                 </h3>
                 <p class="mt-1 text-sm text-ink-muted">{entry.data.company}</p>
-                <p class="mt-1 text-[12px] text-ink-subtle">
+                <p class="mt-1 text-xs text-ink-subtle">
                   {period(entry.data.start, entry.data.end)}
                 </p>
-                <div class="mt-3 space-y-1 text-ink-muted">
+                <div class="rich-text mt-3 text-ink-muted">
                   <Content />
                 </div>
                 <ul class="mt-4 flex flex-wrap gap-2">
                   {entry.data.tags.map((tag) => (
-                    <li class="rounded-sm border border-hairline px-2.5 py-1 text-[12px] text-ink-muted">
-                      {tag}
-                    </li>
+                    <li class="tag">{tag}</li>
                   ))}
                 </ul>
               </div>

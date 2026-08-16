@@ -26,7 +26,57 @@
 
   --color-success: #27a644;
 
+  /* Radius ladder: chips 4 · tags 6 · buttons 8 · cards 12 · panels 16. */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+
+  /*
+   * Type scale (source: DESIGN.md typography canon). Display sizes bake in
+   * weight 600 and aggressive negative tracking; the eyebrow (applied via the
+   * .section-eyebrow component class, not a token) is the only positively
+   * tracked style. Never use weight 700+.
+   */
+  --text-display-xl: clamp(2.5rem, 1.3rem + 4.2vw, 5rem); /* 40 → 80 */
+  --text-display-xl--line-height: 1.05;
+  --text-display-xl--letter-spacing: -0.03em;
+  --text-display-xl--font-weight: 600;
+
+  --text-display-lg: clamp(2rem, 1.2rem + 2.8vw, 3.5rem); /* 32 → 56 */
+  --text-display-lg--line-height: 1.1;
+  --text-display-lg--letter-spacing: -0.032em;
+  --text-display-lg--font-weight: 600;
+
+  --text-display-md: clamp(1.75rem, 1.35rem + 1.4vw, 2.5rem); /* 28 → 40 */
+  --text-display-md--line-height: 1.15;
+  --text-display-md--letter-spacing: -0.025em;
+  --text-display-md--font-weight: 600;
+
+  --text-headline: 1.75rem; /* 28 */
+  --text-headline--line-height: 1.2;
+  --text-headline--letter-spacing: -0.021em;
+  --text-headline--font-weight: 600;
+
+  --text-card-title: 1.375rem; /* 22 */
+  --text-card-title--line-height: 1.25;
+  --text-card-title--letter-spacing: -0.018em;
+  --text-card-title--font-weight: 500;
+
+  --text-subhead: 1.25rem; /* 20 */
+  --text-subhead--line-height: 1.4;
+  --text-subhead--letter-spacing: -0.01em;
+
+  --text-body-lg: 1.125rem; /* 18 */
+  --text-body-lg--line-height: 1.5;
+  --text-body-lg--letter-spacing: -0.006em;
+
   --spacing-section: 96px;
+
+  /* Motion: out-expo for reveals/position changes, spring for small pops. */
+  --ease-out-expo: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 @layer base {
@@ -49,6 +99,11 @@
     display: none;
   }
 
+  ::selection {
+    background: rgba(94, 106, 210, 0.35);
+    color: var(--color-ink);
+  }
+
   :focus-visible {
     outline: 2px solid var(--color-primary);
     outline-offset: 2px;
@@ -61,15 +116,165 @@
   }
 }
 
-/* Scroll reveal (subtle; driven by IntersectionObserver in src/scripts/app.ts).
-   This base rule applies to elements outside the section deck (e.g. the left
-   identity column). Deck sections override it below with a state-driven reveal. */
+/* ---------------------------------------------------------------------------
+ * Type components
+ * ------------------------------------------------------------------------- */
+
+/* Section taxonomy label: chapter number (01/02/…) above each deck h2, and
+ * the hero role. Positive tracking marks it as taxonomy against the
+ * negative-tracked display type. */
+.section-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: var(--color-ink-subtle);
+}
+
+.section-eyebrow::before {
+  content: '';
+  flex: none;
+  width: 16px;
+  height: 1px;
+  background: var(--color-primary);
+}
+
+/* ---------------------------------------------------------------------------
+ * Surface components (depth = surface ladder + 1px hairlines, never shadows;
+ * the inset top highlight is Linear's "pixel rendered" panel edge)
+ * ------------------------------------------------------------------------- */
+
+.card {
+  background: var(--color-surface-1);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.025);
+  transition:
+    background-color 0.25s ease,
+    border-color 0.25s ease,
+    transform 0.25s var(--ease-out-expo);
+}
+
+.card:hover {
+  background: var(--color-surface-2);
+  border-color: var(--color-hairline-strong);
+  transform: translateY(-2px);
+}
+
+.tag {
+  display: inline-block;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-hairline);
+  padding: 4px 10px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--color-ink-muted);
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.tag:hover {
+  background: var(--color-surface-1);
+  border-color: var(--color-hairline-strong);
+  color: var(--color-ink);
+}
+
+/* Inline links inside rendered markdown and small text links (footer). */
+.link-underline,
+.rich-text a {
+  color: var(--color-ink);
+  text-decoration: underline;
+  text-decoration-color: var(--color-hairline-tertiary);
+  text-underline-offset: 3px;
+  transition:
+    color 0.2s ease,
+    text-decoration-color 0.2s ease;
+}
+
+.link-underline:hover,
+.rich-text a:hover {
+  color: var(--color-primary-hover);
+  text-decoration-color: var(--color-primary-hover);
+}
+
+/* Minimal markdown chrome for rendered content entries. */
+.rich-text > p + p {
+  margin-top: 0.75rem;
+}
+
+.rich-text > ul {
+  margin-top: 0.5rem;
+  padding-left: 1.1rem;
+  list-style: disc;
+}
+
+.rich-text li::marker {
+  color: var(--color-ink-tertiary);
+}
+
+.rich-text strong {
+  font-weight: 500;
+  color: var(--color-ink);
+}
+
+/* Hero avatar: hairline ring that warms to lavender on hover. */
+.avatar {
+  border-radius: 9999px;
+  object-fit: cover;
+  outline: 1px solid var(--color-hairline-strong);
+  outline-offset: -1px;
+  transition:
+    transform 0.3s var(--ease-out-expo),
+    outline-color 0.3s ease;
+}
+
+.avatar:hover {
+  transform: scale(1.03);
+  outline-color: rgba(94, 106, 210, 0.5);
+}
+
+/* Terminal prompt chip in the identity column. Mono stays scoped to this
+ * code/terminal context only. */
+.terminal-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-1);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02);
+  padding: 8px 12px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--color-ink-subtle);
+}
+
+.terminal-chip .prompt {
+  color: var(--color-primary);
+}
+
+/* ---------------------------------------------------------------------------
+ * Scroll reveal choreography (driven by src/scripts/app.ts)
+ * ------------------------------------------------------------------------- */
+
+/* Base reveal: elements outside the section deck (identity column, footer).
+ * The IntersectionObserver adds .is-visible on first intersection; the hero
+ * cascade comes from the per-element --reveal-delay stagger set in app.ts. */
 [data-reveal] {
   opacity: 0;
-  transform: translateY(12px);
+  transform: translateY(14px);
   transition:
-    opacity 0.5s ease,
-    transform 0.5s ease;
+    opacity 0.5s var(--ease-out-expo),
+    transform 0.5s var(--ease-out-expo);
+  transition-delay: var(--reveal-delay, 0ms);
 }
 
 [data-reveal].is-visible {
@@ -81,29 +286,33 @@
  * Section deck (right split).
  *
  * Every [data-reveal] inside a deck section is hidden until its section gains
- * `.is-active` (driven by src/scripts/app.ts from the scroll position). Entry is
- * a staggered fade + slide; exit is faster with no stagger, so non-active
- * sections settle out of the way quickly.
+ * `.is-active` (driven by src/scripts/app.ts from the scroll position). Entry
+ * is a staggered fade + rise with a faint blur settle; exit is faster with no
+ * stagger, so non-active sections settle out of the way quickly.
  */
 .deck-section [data-reveal] {
   opacity: 0;
-  transform: translateY(16px);
+  transform: translateY(20px);
+  filter: blur(4px);
   transition:
-    opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    opacity 0.5s var(--ease-out-expo),
+    transform 0.5s var(--ease-out-expo),
+    filter 0.5s var(--ease-out-expo);
   transition-delay: var(--reveal-delay, 0ms);
 }
 
 .deck-section.is-active [data-reveal] {
   opacity: 1;
   transform: none;
+  filter: blur(0);
 }
 
 /* Exit faster than entry: snappier ease, no stagger. */
 .deck-section:not(.is-active) [data-reveal] {
   transition:
     opacity 0.2s ease,
-    transform 0.2s ease;
+    transform 0.2s ease,
+    filter 0.2s ease;
   transition-delay: 0ms;
 }
 
@@ -122,7 +331,9 @@
   }
 }
 
-/* Vertical section nav (left split): rail + sliding indicator. */
+/* ---------------------------------------------------------------------------
+ * Vertical section nav (left split): rail + sliding indicator + chapter index
+ * ------------------------------------------------------------------------- */
 .split-nav {
   position: relative;
 }
@@ -131,9 +342,36 @@
   color: var(--color-primary);
 }
 
+.nav-index {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-ink-tertiary);
+  transition: color 0.2s ease;
+}
+
+.split-nav a:hover .nav-index {
+  color: var(--color-ink-subtle);
+}
+
+.split-nav [data-nav-item].is-active .nav-index {
+  color: var(--color-primary);
+}
+
 @media (min-width: 1024px) {
   .split-nav {
     padding-left: 1.5rem;
+  }
+
+  .split-nav a {
+    transition:
+      color 0.2s ease,
+      transform 0.25s var(--ease-out-expo);
+  }
+
+  .split-nav a:hover {
+    transform: translateX(3px);
   }
 
   /* Static rail the indicator slides along. */
@@ -151,18 +389,20 @@
     position: absolute;
     top: 0;
     left: 0;
-    width: 1px;
+    width: 2px;
     background: var(--color-primary);
-    box-shadow: 0 0 12px rgba(94, 106, 210, 0.45);
+    box-shadow: 0 0 12px rgba(94, 106, 210, 0.5);
     opacity: 0;
     transition:
-      transform 300ms cubic-bezier(0.22, 1, 0.36, 1),
+      transform 350ms var(--ease-out-expo),
       opacity 200ms ease;
     will-change: transform;
   }
 }
 
-/* Mouse-reactive background glow (fixed overlay, position updated by app.ts). */
+/* Mouse-reactive background glow (fixed overlay, position updated by app.ts).
+ * Deliberately faint: a small radius at low alpha keeps it atmospheric without
+ * becoming the spotlight-card effect the canon forbids. */
 .mouse-glow {
   position: fixed;
   inset: 0;
@@ -170,11 +410,14 @@
   pointer-events: none;
 }
 
-/* Experience timeline: the line draws and the dot pops when its item reveals. */
+/* ---------------------------------------------------------------------------
+ * Experience timeline: the line draws and the dot pops when its item reveals
+ * ------------------------------------------------------------------------- */
 .timeline-line {
   transform: scaleY(0);
   transform-origin: top;
-  transition: transform 0.5s ease 0.25s;
+  background: linear-gradient(to bottom, var(--color-hairline-strong), var(--color-hairline));
+  transition: transform 0.6s var(--ease-out-expo) 0.3s;
 }
 
 [data-reveal].is-visible .timeline-line,
@@ -189,7 +432,8 @@
 
 .timeline-dot {
   transform: scale(0);
-  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s;
+  box-shadow: 0 0 0 3px rgba(94, 106, 210, 0.14);
+  transition: transform 0.35s var(--ease-spring) 0.15s;
 }
 
 [data-reveal].is-visible .timeline-dot,
@@ -214,7 +458,9 @@
   }
 }
 
-/* CV preview modal — Zellij-style floating pane with a lavender frame. */
+/* ---------------------------------------------------------------------------
+ * CV preview modal — floating panel with a lavender frame and a titlebar
+ * ------------------------------------------------------------------------- */
 .cv-modal {
   position: fixed;
   inset: 0;
@@ -229,6 +475,7 @@
   position: absolute;
   inset: 0;
   background: rgba(0, 0, 0, 0.72);
+  animation: cv-fade 0.2s ease-out;
 }
 
 .cv-modal-panel {
@@ -240,12 +487,43 @@
   overflow: hidden;
   background: var(--color-surface-1);
   border: 1px solid var(--color-primary);
-  border-radius: 12px;
+  border-radius: var(--radius-xl);
   box-shadow:
     0 0 0 1px var(--color-canvas),
     0 24px 80px rgba(0, 0, 0, 0.6),
     0 0 40px rgba(94, 106, 210, 0.18);
-  animation: cv-pop 0.18s ease-out;
+  animation: cv-pop 0.22s var(--ease-out-expo);
+}
+
+.cv-modal-titlebar {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 6px 8px 6px 14px;
+  background: var(--color-surface-2);
+  border-bottom: 1px solid var(--color-hairline);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--color-ink-subtle);
+}
+
+.cv-modal-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  padding: 5px;
+  color: var(--color-ink-subtle);
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.cv-modal-close:hover {
+  background: var(--color-surface-3);
+  color: var(--color-ink);
 }
 
 .cv-modal-frame {
@@ -255,10 +533,16 @@
   background: #ffffff;
 }
 
+@keyframes cv-fade {
+  from {
+    opacity: 0;
+  }
+}
+
 @keyframes cv-pop {
   from {
     opacity: 0;
-    transform: scale(0.96);
+    transform: scale(0.965);
   }
   to {
     opacity: 1;
@@ -266,19 +550,43 @@
   }
 }
 
+/* ---------------------------------------------------------------------------
+ * Reduced motion: every animated system above flattens to its final state.
+ * ------------------------------------------------------------------------- */
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
   [data-reveal],
   .deck-section [data-reveal] {
     opacity: 1;
     transform: none;
+    filter: none;
     transition: none;
     transition-delay: 0ms;
+  }
+
+  .card,
+  .card:hover {
+    transform: none;
+    transition-property: background-color, border-color;
+  }
+
+  .avatar,
+  .avatar:hover {
+    transform: none;
   }
 
   .timeline-line,
   .timeline-dot {
     transform: none;
     transition: none;
+  }
+
+  .split-nav a,
+  .split-nav a:hover {
+    transform: none;
   }
 
   .split-nav-indicator {
@@ -289,7 +597,8 @@
     animation: none;
   }
 
-  .cv-modal-panel {
+  .cv-modal-panel,
+  .cv-modal-backdrop {
     animation: none;
   }
 }

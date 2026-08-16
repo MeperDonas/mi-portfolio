@@ -4,43 +4,43 @@ import type { Locale } from '../lib/i18n';
 
 interface Props {
   locale: Locale;
+  index: string;
   title: string;
   entries: CollectionEntry<'certifications'>[];
   hidden?: boolean;
 }
 
-const { locale, title, entries, hidden } = Astro.props;
+const { locale, index, title, entries, hidden } = Astro.props;
 ---
 
 {entries.length > 0 && (
   <section data-locale={locale} class="py-section" hidden={hidden || undefined}>
     <div class="px-6">
-      <h2
-        class="text-3xl font-semibold tracking-tight[-0.025em] text-ink sm:text-4xl"
-        data-reveal
-      >
+      <p class="section-eyebrow" data-reveal>{index}</p>
+      <h2 class="mt-4 text-display-md text-ink" data-reveal>
         {title}
       </h2>
-      <ul class="mt-10 grid gap-6 sm:grid-cols-2">
+      <ul class="mt-12 grid gap-6 sm:grid-cols-2">
         {
           entries.map((entry) => (
             <li
-              class="flex flex-col rounded-lg border border-hairline bg-surface-1 p-6 transition-colors hover:bg-surface-2"
+              class="card group flex flex-col"
               data-reveal
             >
-              <h3 class="text-lg font-medium text-ink">{entry.data.title}</h3>
+              <h3 class="text-lg font-medium tracking-[-0.01em] text-ink">{entry.data.title}</h3>
               <p class="mt-1 text-sm text-ink-muted">{entry.data.issuer}</p>
               <div class="mt-auto flex items-center justify-between pt-6">
-                <p class="text-[12px] text-ink-subtle">{entry.data.date}</p>
+                <p class="text-xs text-ink-subtle">{entry.data.date}</p>
                 {entry.data.url && (
                   <a
                     href={entry.data.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    class="text-ink-subtle transition-colors hover:text-primary"
+                    aria-label={entry.data.title}
+                    class="group/link -m-1 rounded-sm p-1 text-ink-subtle transition-colors duration-200 hover:text-primary"
                   >
                     <svg
-                      class="h-3.5 w-3.5"
+                      class="h-3.5 w-3.5 transition-transform duration-200 ease-out-expo group-hover/link:-translate-y-0.5 group-hover/link:translate-x-0.5"
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"

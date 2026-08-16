@@ -28,17 +28,20 @@ const { nav, items } = Astro.props;
   indicator position, the active state, and the smooth scroll-on-click.
 -->
 <nav data-split-nav class="split-nav mt-10 lg:mt-14" aria-label="Primary">
-  <ul class="flex items-center gap-5 overflow-x-auto pb-1 lg:block lg:gap-0 lg:overflow-visible lg:pb-0">
+  <ul class="flex items-center gap-6 overflow-x-auto pb-1 lg:block lg:gap-0 lg:overflow-visible lg:pb-0">
     {
-      items.map(({ id, key }) => (
+      items.map(({ id, key }, i) => (
         <li data-nav-item={id} class="shrink-0 lg:shrink">
           <a
             href={`#${id}`}
             data-scroll-to={id}
-            class="block whitespace-nowrap py-2 text-sm font-medium tracking-[0.2px] text-ink-subtle transition-colors duration-200 hover:text-ink lg:py-2.5"
+            class="flex items-baseline gap-3 whitespace-nowrap py-2 text-sm font-medium tracking-[0.2px] text-ink-subtle transition-colors duration-200 hover:text-ink lg:py-2.5"
           >
-            <span data-locale="es">{nav.es[key]}</span>
-            <span data-locale="en" hidden>{nav.en[key]}</span>
+            <span class="nav-index" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+            <span>
+              <span data-locale="es">{nav.es[key]}</span>
+              <span data-locale="en" hidden>{nav.en[key]}</span>
+            </span>
           </a>
         </li>
       ))

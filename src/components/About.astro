@@ -4,11 +4,12 @@ import type { Locale } from '../lib/i18n';
 
 interface Props {
   locale: Locale;
+  index: string;
   entries: CollectionEntry<'about'>[];
   hidden?: boolean;
 }
 
-const { locale, entries, hidden } = Astro.props;
+const { locale, index, entries, hidden } = Astro.props;
 
 const rendered = await Promise.all(
   entries.map(async (entry) => ({
@@ -24,14 +25,12 @@ const rendered = await Promise.all(
       {
         rendered.map(({ entry, Content }) => (
           <div>
-            <h2
-              class="text-3xl font-semibold tracking-tight[-0.025em] text-ink sm:text-4xl"
-              data-reveal
-            >
+            <p class="section-eyebrow" data-reveal>{index}</p>
+            <h2 class="mt-4 text-display-md text-ink" data-reveal>
               {entry.data.title}
             </h2>
-            <p class="mt-6 text-xl leading-relaxed text-ink" data-reveal>{entry.data.lead}</p>
-            <div class="mt-6 leading-relaxed text-ink-muted" data-reveal>
+            <p class="mt-6 text-subhead text-ink" data-reveal>{entry.data.lead}</p>
+            <div class="rich-text mt-6 leading-relaxed text-ink-muted" data-reveal>
               <Content />
             </div>
           </div>
