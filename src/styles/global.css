@@ -186,6 +186,93 @@
   color: var(--color-ink);
 }
 
+/* Project cards: numbered editorial cards with an outlined link chip. */
+.project-index {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-ink-tertiary);
+}
+
+.project-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-hairline);
+  color: var(--color-ink-subtle);
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.project-link:hover {
+  color: var(--color-primary-hover);
+  border-color: rgba(94, 106, 210, 0.55);
+  background: rgba(94, 106, 210, 0.08);
+}
+
+.project-link svg {
+  transition: transform 0.25s var(--ease-out-expo);
+}
+
+.project-link:hover svg {
+  transform: translate(2px, -2px);
+}
+
+/* Certifications: credential ledger rows, distinct from project cards. */
+.cred-list {
+  border-top: 1px solid var(--color-hairline);
+}
+
+.cred-row {
+  border-bottom: 1px solid var(--color-hairline);
+  padding-inline: 8px;
+  transition: background-color 0.25s ease;
+}
+
+.cred-row:hover {
+  background: var(--color-surface-1);
+}
+
+.cred-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-hairline);
+  background: var(--color-surface-1);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--color-ink-muted);
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.cred-row:hover .cred-mark {
+  color: var(--color-on-primary);
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.cred-date {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-ink-tertiary);
+}
+
 /* Inline links inside rendered markdown and small text links (footer). */
 .link-underline,
 .rich-text a {
@@ -206,17 +293,17 @@
 
 /* Minimal markdown chrome for rendered content entries. */
 .rich-text > p + p {
-  margin-top: 0.75rem;
+  margin-top: 1rem;
 }
 
 .rich-text > ul {
-  margin-top: 0.5rem;
+  margin-top: 0.75rem;
   padding-left: 1.1rem;
   list-style: disc;
 }
 
 .rich-text li::marker {
-  color: var(--color-ink-tertiary);
+  color: var(--color-ink-subtle);
 }
 
 .rich-text strong {
@@ -265,55 +352,41 @@
  * Scroll reveal choreography (driven by src/scripts/app.ts)
  * ------------------------------------------------------------------------- */
 
-/* Base reveal: elements outside the section deck (identity column, footer).
- * The IntersectionObserver adds .is-visible on first intersection; the hero
- * cascade comes from the per-element --reveal-delay stagger set in app.ts. */
-[data-reveal] {
-  opacity: 0;
-  transform: translateY(14px);
-  transition:
-    opacity 0.5s var(--ease-out-expo),
-    transform 0.5s var(--ease-out-expo);
-  transition-delay: var(--reveal-delay, 0ms);
-}
-
-[data-reveal].is-visible {
-  opacity: 1;
-  transform: none;
-}
-
 /*
- * Section deck (right split).
- *
- * Every [data-reveal] inside a deck section is hidden until its section gains
- * `.is-active` (driven by src/scripts/app.ts from the scroll position). Entry
- * is a staggered fade + rise with a faint blur settle; exit is faster with no
- * stagger, so non-active sections settle out of the way quickly.
+ * One reveal engine for the whole page: an IntersectionObserver in app.ts adds
+ * `.is-visible` per element as it enters view, assigning batch staggers via
+ * --reveal-delay. Hidden initial states are gated behind html.js (added
+ * pre-paint by Base.astro), so without JS everything renders visible.
+ * Once revealed, an element STAYS revealed: free scrolling never shows
+ * semi-faded ghost content between sections.
  */
-.deck-section [data-reveal] {
+.js [data-reveal] {
   opacity: 0;
-  transform: translateY(20px);
-  filter: blur(4px);
+  transform: translateY(32px);
+  filter: blur(6px);
   transition:
-    opacity 0.5s var(--ease-out-expo),
-    transform 0.5s var(--ease-out-expo),
-    filter 0.5s var(--ease-out-expo);
+    opacity 0.6s var(--ease-out-expo),
+    transform 0.6s var(--ease-out-expo),
+    filter 0.6s var(--ease-out-expo);
   transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform, filter;
 }
 
-.deck-section.is-active [data-reveal] {
+.js [data-reveal].is-visible {
   opacity: 1;
   transform: none;
-  filter: blur(0);
+  filter: none;
 }
 
-/* Exit faster than entry: snappier ease, no stagger. */
-.deck-section:not(.is-active) [data-reveal] {
-  transition:
-    opacity 0.2s ease,
-    transform 0.2s ease,
-    filter 0.2s ease;
-  transition-delay: 0ms;
+/* Cards enter with a slight scale so grid batches read as a wave. */
+.js [data-reveal].reveal-card {
+  transform: translateY(38px) scale(0.97);
+}
+
+/* Headings travel further for a clear hierarchical beat. */
+.js h1[data-reveal],
+.js h2[data-reveal] {
+  transform: translateY(44px);
 }
 
 /* Deck sections vertically center their content; tone down the components'
@@ -327,7 +400,7 @@
 
   .deck-section > section {
     width: 100%;
-    padding-block: 3rem;
+    padding-block: clamp(1.5rem, 4vh, 3rem);
   }
 }
 
@@ -400,6 +473,71 @@
   }
 }
 
+/* ---------------------------------------------------------------------------
+ * Identity column (left split): ALWAYS static on lg+. Vertical rhythm is
+ * driven by viewport-height clamps so the content compresses on short screens
+ * instead of overflowing; overflow:hidden is the hard guarantee it never
+ * scrolls. Below lg these overrides don't apply and the page scrolls normally.
+ * ------------------------------------------------------------------------- */
+@media (min-width: 1024px) {
+  .identity-col {
+    overflow: hidden;
+  }
+
+  .hero-avatar {
+    width: clamp(120px, 20vh, 200px);
+    height: clamp(120px, 20vh, 200px);
+  }
+
+  .identity-name {
+    font-size: clamp(2.4rem, 7.4vh, 5rem);
+  }
+
+  .hero-stack > * + * {
+    margin-top: clamp(14px, 2.6vh, 30px);
+  }
+
+  .hero-wrap {
+    margin-top: clamp(18px, 3.4vh, 52px);
+  }
+
+  .identity-col .split-nav {
+    margin-top: clamp(20px, 4vh, 56px);
+  }
+
+  .identity-col .split-nav a {
+    padding-block: clamp(6px, 1.1vh, 10px);
+  }
+}
+
+/* Short-viewports tier: compress further so everything fits without scroll. */
+@media (min-width: 1024px) and (max-height: 760px) {
+  .hero-avatar {
+    width: clamp(96px, 17vh, 160px);
+    height: clamp(96px, 17vh, 160px);
+  }
+
+  .identity-name {
+    font-size: clamp(2.1rem, 6.6vh, 4rem);
+  }
+
+  .hero-stack > * + * {
+    margin-top: clamp(10px, 2vh, 22px);
+  }
+
+  .hero-wrap {
+    margin-top: clamp(12px, 2.4vh, 32px);
+  }
+
+  .identity-col .split-nav {
+    margin-top: clamp(14px, 3vh, 40px);
+  }
+
+  .identity-col .split-nav a {
+    padding-block: 5px;
+  }
+}
+
 /* Mouse-reactive background glow (fixed overlay, position updated by app.ts).
  * Deliberately faint: a small radius at low alpha keeps it atmospheric without
  * becoming the spotlight-card effect the canon forbids. */
@@ -417,27 +555,20 @@
   transform: scaleY(0);
   transform-origin: top;
   background: linear-gradient(to bottom, var(--color-hairline-strong), var(--color-hairline));
-  transition: transform 0.6s var(--ease-out-expo) 0.3s;
+  transition: transform 0.75s var(--ease-out-expo) 0.25s;
 }
 
-[data-reveal].is-visible .timeline-line,
-.deck-section.is-active [data-reveal] .timeline-line {
+[data-reveal].is-visible .timeline-line {
   transform: scaleY(1);
-}
-
-.deck-section:not(.is-active) [data-reveal] .timeline-line,
-.deck-section:not(.is-active) [data-reveal] .timeline-dot {
-  transition-delay: 0s;
 }
 
 .timeline-dot {
   transform: scale(0);
-  box-shadow: 0 0 0 3px rgba(94, 106, 210, 0.14);
-  transition: transform 0.35s var(--ease-spring) 0.15s;
+  box-shadow: 0 0 0 4px rgba(94, 106, 210, 0.16);
+  transition: transform 0.45s var(--ease-spring) 0.35s;
 }
 
-[data-reveal].is-visible .timeline-dot,
-.deck-section.is-active [data-reveal] .timeline-dot {
+[data-reveal].is-visible .timeline-dot {
   transform: scale(1);
 }
 
@@ -558,13 +689,13 @@
     scroll-behavior: auto;
   }
 
-  [data-reveal],
-  .deck-section [data-reveal] {
+  .js [data-reveal] {
     opacity: 1;
     transform: none;
     filter: none;
     transition: none;
     transition-delay: 0ms;
+    will-change: auto;
   }
 
   .card,

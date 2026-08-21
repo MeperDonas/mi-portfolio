@@ -16,6 +16,10 @@ const { title, description } = Astro.props;
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
+    <!-- Pre-paint: gates the hidden reveal states behind html.js so there is
+         never a flash of invisible content before the app module loads, and a
+         no-JS visitor sees everything rendered. -->
+    <script is:inline>document.documentElement.classList.add('js');</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
     <meta name="theme-color" content="#010102" />

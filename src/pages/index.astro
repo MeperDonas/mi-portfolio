@@ -92,8 +92,11 @@ const cvFileEn = en.data.cv?.split('/').pop() ?? '';
   <main
     class="mx-auto max-w-7xl lg:grid lg:h-screen lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:grid-rows-[minmax(0,1fr)] lg:gap-20 lg:overflow-hidden"
   >
-    <!-- Identity + nav column: content aligned to the top. -->
-    <aside class="flex flex-col px-6 pb-8 pt-8 lg:h-full lg:overflow-y-auto lg:px-10 lg:py-14 lg:pb-10">
+    <!-- Identity + nav column: content aligned to the top. Static by design on
+         lg+ (see .identity-col in global.css): vh-driven clamps compress the
+         content on short viewports and overflow:hidden guarantees it never
+         scrolls internally. -->
+    <aside class="identity-col flex flex-col px-6 pb-8 pt-8 lg:h-full lg:min-h-0 lg:overflow-hidden lg:px-10 lg:py-10">
       <div class="flex items-center justify-between">
         <a
           href="#top"
@@ -118,7 +121,7 @@ const cvFileEn = en.data.cv?.split('/').pop() ?? '';
         <LanguageToggle />
       </div>
 
-      <div class="mt-10 lg:mt-14">
+      <div class="hero-wrap mt-10 lg:mt-14">
         <Hero
           locale="es"
           name={es.data.name}
@@ -146,13 +149,13 @@ const cvFileEn = en.data.cv?.split('/').pop() ?? '';
     <!-- Snap-scroll section deck (lg+). -->
     <div
       data-scroll-root
-      class="split-scroller px-6 pb-16 lg:h-full lg:overflow-y-auto lg:px-10 lg:pb-0 lg:[scroll-snap-type:y_mandatory]"
+      class="split-scroller px-6 pb-16 lg:h-full lg:overflow-y-auto lg:px-10 lg:pb-0 lg:[scroll-snap-type:y_proximity]"
     >
       {(hasAboutEs || hasAboutEn) && (
         <div
           id="about"
           data-section
-          class="deck-section lg:flex lg:min-h-full lg:flex-col lg:[scroll-snap-align:start] lg:[scroll-snap-stop:always]"
+          class="deck-section lg:flex lg:min-h-full lg:flex-col lg:[scroll-snap-align:start]"
         >
           {hasAboutEs && <About locale="es" index={sectionIndex.get('about') ?? '01'} entries={aboutEs} />}
           {hasAboutEn && <About locale="en" index={sectionIndex.get('about') ?? '01'} entries={aboutEn} hidden />}
@@ -163,7 +166,7 @@ const cvFileEn = en.data.cv?.split('/').pop() ?? '';
         <div
           id="experience"
           data-section
-          class="deck-section lg:flex lg:min-h-full lg:flex-col lg:[scroll-snap-align:start] lg:[scroll-snap-stop:always]"
+          class="deck-section lg:flex lg:min-h-full lg:flex-col lg:[scroll-snap-align:start]"
         >
           {hasExperienceEs && (
             <Experience
@@ -191,7 +194,7 @@ const cvFileEn = en.data.cv?.split('/').pop() ?? '';
         <div
           id="projects"
           data-section
-          class="deck-section lg:flex lg:min-h-full lg:flex-col lg:[scroll-snap-align:start] lg:[scroll-snap-stop:always]"
+          class="deck-section lg:flex lg:min-h-full lg:flex-col lg:[scroll-snap-align:start]"
         >
           {hasProjectsEs && <Projects locale="es" index={sectionIndex.get('projects') ?? '03'} title={es.data.nav.projects} entries={projectsEs} />}
           {hasProjectsEn && <Projects locale="en" index={sectionIndex.get('projects') ?? '03'} title={en.data.nav.projects} entries={projectsEn} hidden />}
@@ -202,7 +205,7 @@ const cvFileEn = en.data.cv?.split('/').pop() ?? '';
         <div
           id="certifications"
           data-section
-          class="deck-section lg:flex lg:min-h-full lg:flex-col lg:[scroll-snap-align:start] lg:[scroll-snap-stop:always]"
+          class="deck-section lg:flex lg:min-h-full lg:flex-col lg:[scroll-snap-align:start]"
         >
           {hasCertificationsEs && (
             <Certifications
@@ -224,9 +227,9 @@ const cvFileEn = en.data.cv?.split('/').pop() ?? '';
         </div>
       )}
 
-      <!-- Colophon: closes the deck on lg+ (own snap point at its end edge) and
-           the page on mobile. Both locale copies follow the data-locale pattern. -->
-      <footer class="px-6 lg:[scroll-snap-align:end]">
+      <!-- Colophon: closes the page; not a snap point, so it can never trap
+            the end of the deck. Both locale copies follow the data-locale pattern. -->
+      <footer class="px-6">
         <div
           class="flex flex-col gap-3 border-t border-hairline pb-14 pt-8 sm:flex-row sm:items-center sm:justify-between"
           data-reveal

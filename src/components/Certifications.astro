@@ -11,6 +11,13 @@ interface Props {
 }
 
 const { locale, index, title, entries, hidden } = Astro.props;
+
+// Ledger mark: issuer initials (or first two letters) for the mono chip.
+function issuerMark(issuer: string): string {
+  const words = issuer.trim().split(/\s+/);
+  const mark = words.length > 1 ? words[0][0] + words[1][0] : issuer.slice(0, 2);
+  return mark.toUpperCase();
+}
 ---
 
 {entries.length > 0 && (
@@ -20,40 +27,40 @@ const { locale, index, title, entries, hidden } = Astro.props;
       <h2 class="mt-4 text-display-md text-ink" data-reveal>
         {title}
       </h2>
-      <ul class="mt-12 grid gap-6 sm:grid-cols-2">
+      <ul class="cred-list mt-12">
         {
           entries.map((entry) => (
-            <li
-              class="card group flex flex-col"
-              data-reveal
-            >
-              <h3 class="text-lg font-medium tracking-[-0.01em] text-ink">{entry.data.title}</h3>
-              <p class="mt-1 text-sm text-ink-muted">{entry.data.issuer}</p>
-              <div class="mt-auto flex items-center justify-between pt-6">
-                <p class="text-xs text-ink-subtle">{entry.data.date}</p>
-                {entry.data.url && (
-                  <a
-                    href={entry.data.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={entry.data.title}
-                    class="group/link -m-1 rounded-sm p-1 text-ink-subtle transition-colors duration-200 hover:text-primary"
-                  >
-                    <svg
-                      class="h-3.5 w-3.5 transition-transform duration-200 ease-out-expo group-hover/link:-translate-y-0.5 group-hover/link:translate-x-0.5"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      aria-hidden="true"
-                    >
-                      <path d="M7 17L17 7M9 7h8v8"></path>
-                    </svg>
-                  </a>
-                )}
+            <li class="cred-row flex items-center gap-4 py-5 sm:gap-5" data-reveal>
+              <span class="cred-mark" aria-hidden="true">
+                {issuerMark(entry.data.issuer)}
+              </span>
+              <div class="min-w-0 flex-1">
+                <h3 class="text-base font-medium tracking-[-0.01em] text-ink">{entry.data.title}</h3>
+                <p class="mt-0.5 text-sm text-ink-subtle">{entry.data.issuer}</p>
               </div>
+              <span class="cred-date hidden sm:inline">{entry.data.date}</span>
+              {entry.data.url && (
+                <a
+                  href={entry.data.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`${entry.data.title} — ${entry.data.issuer}`}
+                  class="project-link"
+                >
+                  <svg
+                    class="h-3.5 w-3.5"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M7 17L17 7M9 7h8v8"></path>
+                  </svg>
+                </a>
+              )}
             </li>
           ))
         }

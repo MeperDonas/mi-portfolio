@@ -17,18 +17,18 @@ const { locale, name, role, email, linkedin, github, cv, hidden } = Astro.props;
 const cvLabel = locale === 'es' ? 'Ver CV' : 'View CV';
 ---
 
-<div data-locale={locale} hidden={hidden || undefined} class="flex flex-col items-center text-center lg:items-start lg:text-left">
+<div data-locale={locale} hidden={hidden || undefined} class="hero-stack flex flex-col items-center text-center lg:items-start lg:text-left">
   <img
     src="/avatar.jpeg"
     alt={name}
     width="1280"
     height="1163"
     data-reveal
-    class="avatar h-44 w-44 lg:h-52 lg:w-52"
+    class="avatar hero-avatar h-44 w-44 lg:h-52 lg:w-52"
   />
 
   <p class="section-eyebrow mt-8" data-reveal>{role}</p>
-  <h1 class="mt-4 text-display-xl text-ink" data-reveal>{name}</h1>
+  <h1 class="identity-name mt-4 text-display-xl text-ink" data-reveal>{name}</h1>
 
   <p class="terminal-chip mt-7" data-reveal>
     <span class="prompt" aria-hidden="true">&gt;</span>
