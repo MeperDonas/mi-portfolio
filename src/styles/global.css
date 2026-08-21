@@ -169,7 +169,8 @@
 .tag {
   display: inline-block;
   border-radius: var(--radius-sm);
-  border: 1px solid var(--color-hairline);
+  border: 1px solid rgba(94, 106, 210, 0.28);
+  background: rgba(94, 106, 210, 0.08);
   padding: 4px 10px;
   font-size: 12px;
   line-height: 1.4;
@@ -177,13 +178,15 @@
   transition:
     background-color 0.2s ease,
     border-color 0.2s ease,
-    color 0.2s ease;
+    color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .tag:hover {
-  background: var(--color-surface-1);
-  border-color: var(--color-hairline-strong);
-  color: var(--color-ink);
+  background: rgba(94, 106, 210, 0.18);
+  border-color: rgba(130, 143, 255, 0.6);
+  color: var(--color-primary-hover);
+  box-shadow: 0 0 14px rgba(94, 106, 210, 0.18);
 }
 
 /* Project cards: numbered editorial cards with an outlined link chip. */
@@ -359,23 +362,25 @@
  * pre-paint by Base.astro), so without JS everything renders visible.
  * Once revealed, an element STAYS revealed: free scrolling never shows
  * semi-faded ghost content between sections.
+ *
+ * Perf: only opacity + transform animate (both compositor-friendly). No
+ * per-element filter/blur here — blurring a dozen nodes at once while the
+ * deck scrolls is what made section changes feel stuck. will-change is
+ * intentionally omitted: promoting every reveal node to its own layer costs
+ * more than it saves.
  */
 .js [data-reveal] {
   opacity: 0;
   transform: translateY(32px);
-  filter: blur(6px);
   transition:
-    opacity 0.6s var(--ease-out-expo),
-    transform 0.6s var(--ease-out-expo),
-    filter 0.6s var(--ease-out-expo);
+    opacity 0.45s var(--ease-out-expo),
+    transform 0.45s var(--ease-out-expo);
   transition-delay: var(--reveal-delay, 0ms);
-  will-change: opacity, transform, filter;
 }
 
 .js [data-reveal].is-visible {
   opacity: 1;
   transform: none;
-  filter: none;
 }
 
 /* Cards enter with a slight scale so grid batches read as a wave. */
@@ -473,6 +478,14 @@
   }
 }
 
+/* Hero name: always one line ("junto"), fluid against the viewport so it
+   scales safely from 320px phones up to the lg breakpoint. Unlayered CSS
+   overrides the text-display-xl utility. */
+.identity-name {
+  white-space: nowrap;
+  font-size: clamp(1.9rem, 7.5vw, 5rem);
+}
+
 /* ---------------------------------------------------------------------------
  * Identity column (left split): ALWAYS static on lg+. Vertical rhythm is
  * driven by viewport-height clamps so the content compresses on short screens
@@ -482,15 +495,20 @@
 @media (min-width: 1024px) {
   .identity-col {
     overflow: hidden;
+    /* Vertically center the identity stack in the column (`safe` keeps the
+       top reachable when content is taller than a short viewport). */
+    justify-content: safe center;
   }
 
   .hero-avatar {
-    width: clamp(120px, 20vh, 200px);
-    height: clamp(120px, 20vh, 200px);
+    width: clamp(140px, 22vh, 232px);
+    height: clamp(140px, 22vh, 232px);
   }
 
+  /* Single-line name on desktop too: capped to the ~473px usable column
+     width so it never wraps there either. */
   .identity-name {
-    font-size: clamp(2.4rem, 7.4vh, 5rem);
+    font-size: clamp(2.5rem, 6vh, 3.25rem);
   }
 
   .hero-stack > * + * {
@@ -513,12 +531,12 @@
 /* Short-viewports tier: compress further so everything fits without scroll. */
 @media (min-width: 1024px) and (max-height: 760px) {
   .hero-avatar {
-    width: clamp(96px, 17vh, 160px);
-    height: clamp(96px, 17vh, 160px);
+    width: clamp(112px, 18vh, 176px);
+    height: clamp(112px, 18vh, 176px);
   }
 
   .identity-name {
-    font-size: clamp(2.1rem, 6.6vh, 4rem);
+    font-size: clamp(2.25rem, 6vh, 3rem);
   }
 
   .hero-stack > * + * {
@@ -692,10 +710,8 @@
   .js [data-reveal] {
     opacity: 1;
     transform: none;
-    filter: none;
     transition: none;
     transition-delay: 0ms;
-    will-change: auto;
   }
 
   .card,

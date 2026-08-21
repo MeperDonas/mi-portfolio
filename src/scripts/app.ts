@@ -32,7 +32,7 @@ if (!reducedMotion && 'IntersectionObserver' in window) {
       });
       revealed.forEach((entry, i) => {
         const el = entry.target as HTMLElement;
-        el.style.setProperty('--reveal-delay', `${Math.min(i * 90, 540)}ms`);
+        el.style.setProperty('--reveal-delay', `${Math.min(i * 70, 320)}ms`);
         el.classList.add('is-visible');
         revealObserver.unobserve(el);
       });
@@ -225,9 +225,10 @@ if (termEls.length > 0) {
 }
 
 // --- Mouse-reactive background glow (lerped follow) ---
-// Kept deliberately subtle: small radius, low alpha, slow lerp. The rAF loop
-// only runs while the pointer is actually moving and parks itself once the
-// glow settles, so an idle page costs zero frames.
+// Two lavender layers: a small bright core that tracks the pointer closely
+// plus a wide soft halo that breathes with it. The rAF loop only runs while
+// the pointer is actually moving and parks itself once the glow settles, so
+// an idle page costs zero frames.
 if (!reducedMotion) {
   const glow = document.querySelector<HTMLElement>('.mouse-glow');
   if (glow) {
@@ -237,9 +238,11 @@ if (!reducedMotion) {
     let y = targetY;
     let rafId: number | null = null;
     const render = () => {
-      x += (targetX - x) * 0.06;
-      y += (targetY - y) * 0.06;
-      glow.style.background = `radial-gradient(420px circle at ${x.toFixed(1)}px ${y.toFixed(1)}px, rgba(94, 106, 210, 0.05), transparent 65%)`;
+      x += (targetX - x) * 0.09;
+      y += (targetY - y) * 0.09;
+      const px = x.toFixed(1);
+      const py = y.toFixed(1);
+      glow.style.background = `radial-gradient(200px circle at ${px}px ${py}px, rgba(139, 147, 255, 0.10), transparent 60%), radial-gradient(640px circle at ${px}px ${py}px, rgba(94, 106, 210, 0.07), transparent 70%)`;
       rafId =
         Math.abs(targetX - x) > 0.5 || Math.abs(targetY - y) > 0.5
           ? requestAnimationFrame(render)
