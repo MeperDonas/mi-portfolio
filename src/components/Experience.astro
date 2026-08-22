@@ -1,6 +1,7 @@
 ---
 import { render, type CollectionEntry } from 'astro:content';
 import type { Locale } from '../lib/i18n';
+import { tagHue } from '../lib/tags';
 
 interface Props {
   locale: Locale;
@@ -53,7 +54,9 @@ function period(start: string, end: string | undefined): string {
                 </div>
                 <ul class="mt-5 flex flex-wrap gap-2">
                   {entry.data.tags.map((tag) => (
-                    <li class="tag">{tag}</li>
+                    <li class="tag" style={`--tag-accent: ${tagHue(tag)}`}>
+                      {tag}
+                    </li>
                   ))}
                 </ul>
               </div>

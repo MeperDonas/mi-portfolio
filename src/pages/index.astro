@@ -149,13 +149,13 @@ const cvFileEn = en.data.cv?.split('/').pop() ?? '';
     <!-- Snap-scroll section deck (lg+). -->
     <div
       data-scroll-root
-      class="split-scroller px-6 pb-16 lg:h-full lg:overflow-y-auto lg:px-10 lg:pb-0 lg:[scroll-snap-type:y_proximity]"
+      class="split-scroller px-6 pb-16 lg:h-full lg:overflow-y-auto lg:px-10 lg:pb-0"
     >
       {(hasAboutEs || hasAboutEn) && (
         <div
           id="about"
           data-section
-          class="deck-section lg:flex lg:min-h-full lg:flex-col lg:[scroll-snap-align:start]"
+          class="deck-section lg:flex lg:min-h-full lg:flex-col"
         >
           {hasAboutEs && <About locale="es" index={sectionIndex.get('about') ?? '01'} entries={aboutEs} />}
           {hasAboutEn && <About locale="en" index={sectionIndex.get('about') ?? '01'} entries={aboutEn} hidden />}
@@ -166,7 +166,7 @@ const cvFileEn = en.data.cv?.split('/').pop() ?? '';
         <div
           id="experience"
           data-section
-          class="deck-section lg:flex lg:min-h-full lg:flex-col lg:[scroll-snap-align:start]"
+          class="deck-section lg:flex lg:min-h-full lg:flex-col"
         >
           {hasExperienceEs && (
             <Experience
@@ -194,7 +194,7 @@ const cvFileEn = en.data.cv?.split('/').pop() ?? '';
         <div
           id="projects"
           data-section
-          class="deck-section lg:flex lg:min-h-full lg:flex-col lg:[scroll-snap-align:start]"
+          class="deck-section lg:flex lg:min-h-full lg:flex-col"
         >
           {hasProjectsEs && <Projects locale="es" index={sectionIndex.get('projects') ?? '03'} title={es.data.nav.projects} entries={projectsEs} />}
           {hasProjectsEn && <Projects locale="en" index={sectionIndex.get('projects') ?? '03'} title={en.data.nav.projects} entries={projectsEn} hidden />}
@@ -205,7 +205,7 @@ const cvFileEn = en.data.cv?.split('/').pop() ?? '';
         <div
           id="certifications"
           data-section
-          class="deck-section lg:flex lg:min-h-full lg:flex-col lg:[scroll-snap-align:start]"
+          class="deck-section lg:flex lg:min-h-full lg:flex-col"
         >
           {hasCertificationsEs && (
             <Certifications

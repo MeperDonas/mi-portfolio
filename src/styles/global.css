@@ -166,11 +166,14 @@
   transform: translateY(-2px);
 }
 
+/* Tech tags: each technology gets a stable accent hue (src/lib/tags.ts sets
+ * --tag-accent per chip), rendered as a low-alpha tint that stays premium on
+ * the dark canvas. Plain rgba fallbacks come first for old browsers. */
 .tag {
   display: inline-block;
   border-radius: var(--radius-sm);
-  border: 1px solid rgba(94, 106, 210, 0.28);
-  background: rgba(94, 106, 210, 0.08);
+  border: 1px solid rgba(139, 147, 255, 0.32);
+  background: rgba(139, 147, 255, 0.1);
   padding: 4px 10px;
   font-size: 12px;
   line-height: 1.4;
@@ -182,11 +185,28 @@
     box-shadow 0.2s ease;
 }
 
+@supports (color: color-mix(in srgb, red, blue)) {
+  .tag {
+    border-color: color-mix(in srgb, var(--tag-accent, #8b93ff) 34%, transparent);
+    background: color-mix(in srgb, var(--tag-accent, #8b93ff) 11%, transparent);
+    color: color-mix(in srgb, var(--tag-accent, #8b93ff) 78%, white);
+  }
+}
+
 .tag:hover {
-  background: rgba(94, 106, 210, 0.18);
-  border-color: rgba(130, 143, 255, 0.6);
+  background: rgba(139, 147, 255, 0.2);
+  border-color: rgba(139, 147, 255, 0.6);
   color: var(--color-primary-hover);
   box-shadow: 0 0 14px rgba(94, 106, 210, 0.18);
+}
+
+@supports (color: color-mix(in srgb, red, blue)) {
+  .tag:hover {
+    background: color-mix(in srgb, var(--tag-accent, #8b93ff) 20%, transparent);
+    border-color: color-mix(in srgb, var(--tag-accent, #8b93ff) 62%, transparent);
+    color: color-mix(in srgb, var(--tag-accent, #8b93ff) 90%, white);
+    box-shadow: 0 0 14px color-mix(in srgb, var(--tag-accent, #8b93ff) 26%, transparent);
+  }
 }
 
 /* Project cards: numbered editorial cards with an outlined link chip. */
@@ -226,6 +246,48 @@
 
 .project-link:hover svg {
   transform: translate(2px, -2px);
+}
+
+/* Project cards carry their lead tech's hue as --card-accent: the oversized
+   ghost index tints on hover and the border warms toward the same color. */
+.project-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.project-card:hover {
+  border-color: rgba(139, 147, 255, 0.45);
+}
+
+@supports (color: color-mix(in srgb, red, blue)) {
+  .project-card:hover {
+    border-color: color-mix(in srgb, var(--card-accent, #8b93ff) 45%, transparent);
+  }
+}
+
+.project-ghost {
+  pointer-events: none;
+  user-select: none;
+  position: absolute;
+  right: -8px;
+  bottom: -22px;
+  font-family: var(--font-mono);
+  font-size: 7.5rem;
+  line-height: 1;
+  font-weight: 600;
+  letter-spacing: -0.05em;
+  color: rgba(255, 255, 255, 0.03);
+  transition: color 0.3s ease;
+}
+
+.project-card:hover .project-ghost {
+  color: rgba(139, 147, 255, 0.09);
+}
+
+@supports (color: color-mix(in srgb, red, blue)) {
+  .project-card:hover .project-ghost {
+    color: color-mix(in srgb, var(--card-accent, #8b93ff) 14%, transparent);
+  }
 }
 
 /* Certifications: credential ledger rows, distinct from project cards. */
@@ -478,14 +540,6 @@
   }
 }
 
-/* Hero name: always one line ("junto"), fluid against the viewport so it
-   scales safely from 320px phones up to the lg breakpoint. Unlayered CSS
-   overrides the text-display-xl utility. */
-.identity-name {
-  white-space: nowrap;
-  font-size: clamp(1.9rem, 7.5vw, 5rem);
-}
-
 /* ---------------------------------------------------------------------------
  * Identity column (left split): ALWAYS static on lg+. Vertical rhythm is
  * driven by viewport-height clamps so the content compresses on short screens
@@ -500,15 +554,16 @@
     justify-content: safe center;
   }
 
+  /* Centered and larger on desktop: margin auto centers it over the
+     left-aligned text column without moving the text itself. */
   .hero-avatar {
-    width: clamp(140px, 22vh, 232px);
-    height: clamp(140px, 22vh, 232px);
+    margin-inline: auto;
+    width: clamp(150px, 24vh, 248px);
+    height: clamp(150px, 24vh, 248px);
   }
 
-  /* Single-line name on desktop too: capped to the ~473px usable column
-     width so it never wraps there either. */
   .identity-name {
-    font-size: clamp(2.5rem, 6vh, 3.25rem);
+    font-size: clamp(2.4rem, 7.4vh, 5rem);
   }
 
   .hero-stack > * + * {
@@ -520,7 +575,7 @@
   }
 
   .identity-col .split-nav {
-    margin-top: clamp(20px, 4vh, 56px);
+    margin-top: clamp(18px, 3vh, 40px);
   }
 
   .identity-col .split-nav a {
@@ -531,12 +586,12 @@
 /* Short-viewports tier: compress further so everything fits without scroll. */
 @media (min-width: 1024px) and (max-height: 760px) {
   .hero-avatar {
-    width: clamp(112px, 18vh, 176px);
-    height: clamp(112px, 18vh, 176px);
+    width: clamp(120px, 19vh, 184px);
+    height: clamp(120px, 19vh, 184px);
   }
 
   .identity-name {
-    font-size: clamp(2.25rem, 6vh, 3rem);
+    font-size: clamp(2.1rem, 6.6vh, 4rem);
   }
 
   .hero-stack > * + * {

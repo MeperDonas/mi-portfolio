@@ -1,6 +1,7 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import type { Locale } from '../lib/i18n';
+import { tagHue } from '../lib/tags';
 
 interface Props {
   locale: Locale;
@@ -22,44 +23,58 @@ const { locale, index, title, entries, hidden } = Astro.props;
       </h2>
       <div class="mt-12 grid gap-6 sm:grid-cols-2">
         {
-          entries.map((entry, i) => (
-            <article class="card reveal-card group flex aspect-4/5 flex-col" data-reveal>
-              <div class="flex items-start justify-between gap-4">
-                <span class="project-index pt-1.5" aria-hidden="true">
+          entries.map((entry, i) => {
+            // Lead tech drives the card's accent hue (ghost index + hover
+            // border); each stack chip tints itself with its own hue.
+            const cardAccent =
+              entry.data.stack.length > 0 ? tagHue(entry.data.stack[0]) : undefined;
+            return (
+              <article
+                class="card project-card reveal-card group flex aspect-4/5 flex-col"
+                data-reveal
+                style={cardAccent ? `--card-accent: ${cardAccent}` : undefined}
+              >
+                <span class="project-ghost" aria-hidden="true">
                   {String(i + 1).padStart(2, '0')}
                 </span>
-                {entry.data.url && (
-                  <a
-                    href={entry.data.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={entry.data.title}
-                    class="project-link"
-                  >
-                    <svg
-                      class="h-4 w-4"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      aria-hidden="true"
+                <div class="relative mt-1 flex items-start justify-between gap-4">
+                  <h3 class="text-card-title text-ink">{entry.data.title}</h3>
+                  {entry.data.url && (
+                    <a
+                      href={entry.data.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={entry.data.title}
+                      class="project-link"
                     >
-                      <path d="M7 17L17 7M9 7h8v8"></path>
-                    </svg>
-                  </a>
-                )}
-              </div>
-              <h3 class="mt-5 text-card-title text-ink">{entry.data.title}</h3>
-              <p class="mt-3 text-sm leading-relaxed text-ink-muted">{entry.data.description}</p>
-              <ul class="mt-auto flex flex-wrap gap-2 border-t border-hairline pt-4">
-                {entry.data.stack.map((tech) => (
-                  <li class="tag">{tech}</li>
-                ))}
-              </ul>
-            </article>
-          ))
+                      <svg
+                        class="h-4 w-4"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        aria-hidden="true"
+                      >
+                        <path d="M7 17L17 7M9 7h8v8"></path>
+                      </svg>
+                    </a>
+                  )}
+                </div>
+                <p class="relative mt-3 line-clamp-3 text-sm leading-relaxed text-ink-muted">
+                  {entry.data.description}
+                </p>
+                <ul class="relative mt-auto flex flex-wrap gap-2 border-t border-hairline pt-4">
+                  {entry.data.stack.map((tech) => (
+                    <li class="tag" style={`--tag-accent: ${tagHue(tech)}`}>
+                      {tech}
+                    </li>
+                  ))}
+                </ul>
+              </article>
+            );
+          })
         }
       </div>
     </div>
