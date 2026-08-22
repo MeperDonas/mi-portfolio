@@ -160,19 +160,139 @@ function animateScrollTo(targetTop: number, duration = 480): void {
   scrollAnimationFrame = requestAnimationFrame(step);
 }
 
+function scrollToSection(target: HTMLElement): void {
+  const deck = getDeckScroller();
+  // Target position inside whichever container actually scrolls.
+  const top =
+    deck && target.closest('[data-scroll-root]')
+      ? target.getBoundingClientRect().top - deck.getBoundingClientRect().top + deck.scrollTop
+      : target.getBoundingClientRect().top + window.scrollY;
+  animateScrollTo(top);
+}
+
+// --- Command palette (Ctrl/Cmd+K) --------------------------------------------
+// Searchable launcher for sections and quick actions. The hidden state is
+// driven by the [hidden] attribute so the global i18n toggle keeps working.
+const cmdkRoot = document.querySelector<HTMLElement>('[data-cmdk]');
+let paletteOpen = false;
+
+if (cmdkRoot) {
+  const input = cmdkRoot.querySelector<HTMLInputElement>('[data-cmdk-input]');
+  const listEl = cmdkRoot.querySelector<HTMLElement>('[data-cmdk-list]');
+  const allItems = () => Array.from(listEl?.querySelectorAll<HTMLElement>('[data-cmdk-item]') ?? []);
+  const visibleItems = () => allItems().filter((item) => !item.hidden);
+
+  const setSelected = (target: HTMLElement | null) => {
+    for (const item of allItems()) {
+      const on = item === target;
+      item.classList.toggle('is-selected', on);
+      if (on) {
+        item.setAttribute('aria-selected', 'true');
+        item.scrollIntoView({ block: 'nearest' });
+      } else {
+        item.removeAttribute('aria-selected');
+      }
+    }
+  };
+
+  const applyFilter = () => {
+    if (!input) return;
+    const query = input.value.trim().toLowerCase();
+    let firstVisible: HTMLElement | null = null;
+    for (const item of allItems()) {
+      const match = !query || (item.textContent?.toLowerCase().includes(query) ?? false);
+      item.hidden = !match;
+      if (item.parentElement) item.parentElement.hidden = !match;
+      if (match && !firstVisible) firstVisible = item;
+    }
+    setSelected(firstVisible);
+  };
+
+  function closePalette() {
+    paletteOpen = false;
+    if (cmdkRoot) cmdkRoot.hidden = true;
+  }
+
+  function openPalette() {
+    paletteOpen = true;
+    if (cmdkRoot) cmdkRoot.hidden = false;
+    if (input) {
+      input.value = '';
+      applyFilter();
+      input.focus();
+    }
+  }
+
+  const executeItem = (item: HTMLElement) => {
+    closePalette();
+    if (item instanceof HTMLAnchorElement) {
+      item.click(); // mailto links follow their href
+      return;
+    }
+    const gotoId = item.getAttribute('data-cmdk-goto');
+    if (gotoId) {
+      const target = document.getElementById(gotoId);
+      if (target) scrollToSection(target);
+      return;
+    }
+    const action = item.getAttribute('data-cmdk-action');
+    if (action === 'top') {
+      animateScrollTo(0, 420);
+    } else if (action === 'cv') {
+      // Open the CV preview of whichever locale copy is currently visible.
+      const openButton = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-cv-open]')).find(
+        (button) => button.closest<HTMLElement>('[data-locale]')?.hidden === false,
+      );
+      openButton?.click();
+    }
+  };
+
+  for (const trigger of document.querySelectorAll<HTMLElement>('[data-cmdk-open]')) {
+    trigger.addEventListener('click', openPalette);
+  }
+  cmdkRoot.querySelector('[data-cmdk-close]')?.addEventListener('click', closePalette);
+
+  input?.addEventListener('input', applyFilter);
+
+  input?.addEventListener('keydown', (event: KeyboardEvent) => {
+    if (event.key === 'Escape') {
+      event.stopPropagation(); // keep the page-level Escape handler out
+      closePalette();
+      return;
+    }
+    const visible = visibleItems();
+    if (visible.length === 0) return;
+    const current = visible.findIndex((item) => item.classList.contains('is-selected'));
+    if (event.key === 'ArrowDown') {
+      event.preventDefault();
+      setSelected(visible[(Math.max(current, 0) + 1) % visible.length]);
+    } else if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      setSelected(current <= 0 ? visible[visible.length - 1] : visible[current - 1]);
+    } else if (event.key === 'Enter') {
+      event.preventDefault();
+      executeItem(visible[current] ?? visible[0]);
+    }
+  });
+
+  document.addEventListener('keydown', (event: KeyboardEvent) => {
+    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
+      event.preventDefault();
+      if (paletteOpen) closePalette();
+      else openPalette();
+    } else if (event.key === 'Escape' && paletteOpen) {
+      closePalette();
+    }
+  });
+}
+
 for (const link of document.querySelectorAll<HTMLAnchorElement>('[data-scroll-to]')) {
   link.addEventListener('click', (event) => {
     const id = link.getAttribute('data-scroll-to');
     const target = id ? document.getElementById(id) : null;
     if (!target) return;
     event.preventDefault();
-    const deck = getDeckScroller();
-    // Target position inside whichever container actually scrolls.
-    const top =
-      deck && target.closest('[data-scroll-root]')
-        ? target.getBoundingClientRect().top - deck.getBoundingClientRect().top + deck.scrollTop
-        : target.getBoundingClientRect().top + window.scrollY;
-    animateScrollTo(top);
+    scrollToSection(target);
   });
 }
 
@@ -182,6 +302,52 @@ for (const link of document.querySelectorAll<HTMLAnchorElement>('[data-scroll-to
     animateScrollTo(0, 420);
   });
 }
+
+// --- Keyboard section navigation (ArrowUp/ArrowDown/j/k/Home/End) ------------
+// The deck reads like slides, so the same keys page through sections with the
+// same eased scrolls as the nav. Typing targets and an open CV modal take
+// precedence over page shortcuts.
+const isTypingTarget = (target: EventTarget | null): boolean =>
+  target instanceof HTMLElement &&
+  (target.isContentEditable ||
+    ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName));
+
+document.addEventListener('keydown', (event: KeyboardEvent) => {
+  if (isTypingTarget(event.target)) return;
+  if (paletteOpen) return; // the palette owns the keyboard while open
+  const key = event.key;
+  const down = key === 'ArrowDown' || key === 'j';
+  const up = key === 'ArrowUp' || key === 'k';
+  const home = key === 'Home';
+  const end = key === 'End';
+  if (!down && !up && !home && !end) return;
+
+  for (const modal of document.querySelectorAll<HTMLElement>('[data-cv-modal]')) {
+    if (!modal.hidden) return; // modal open: it owns the keyboard
+  }
+
+  event.preventDefault();
+
+  if (home) {
+    animateScrollTo(0, 420);
+    return;
+  }
+  if (end) {
+    animateScrollTo(document.documentElement.scrollHeight, 480);
+    return;
+  }
+
+  const currentIndex = deckSections.findIndex((section) => section.id === activeId);
+  const targetSection = down
+    ? currentIndex < 0
+      ? deckSections[0]
+      : deckSections[Math.min(deckSections.length - 1, currentIndex + 1)]
+    : currentIndex <= 0
+      ? deckSections[0]
+      : deckSections[currentIndex - 1];
+  if (!targetSection) return;
+  scrollToSection(targetSection);
+});
 
 // --- Terminal typewriter: types a Python print in a loop --------------------
 // Both locale copies stay in sync, so a language toggle always shows the

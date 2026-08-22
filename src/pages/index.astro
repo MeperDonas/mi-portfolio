@@ -118,7 +118,30 @@ const cvFileEn = en.data.cv?.split('/').pop() ?? '';
             <path d="m5 12 7-7 7 7"></path>
           </svg>
         </a>
-        <LanguageToggle />
+        <div class="flex items-center gap-2">
+          <button
+            type="button"
+            data-cmdk-open
+            aria-label="Command palette (Ctrl+K)"
+            title="Ctrl+K"
+            class="flex h-7 w-7 items-center justify-center rounded-md text-ink-subtle transition-colors duration-200 hover:bg-surface-1 hover:text-ink"
+          >
+            <svg
+              class="h-3.5 w-3.5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <circle cx="11" cy="11" r="8"></circle>
+              <path d="m21 21-4.35-4.35"></path>
+            </svg>
+          </button>
+          <LanguageToggle />
+        </div>
       </div>
 
       <div class="hero-wrap mt-10 lg:mt-14">
@@ -307,6 +330,77 @@ const cvFileEn = en.data.cv?.split('/').pop() ?? '';
       </div>
     </div>
   )}
+
+  <!-- Command palette (Ctrl/Cmd+K): sections + quick actions. Labels follow
+       the data-locale pattern so the i18n toggle keeps them in sync. -->
+  <div class="cmdk" data-cmdk hidden>
+    <div class="cmdk-backdrop" data-cmdk-close></div>
+    <div class="cmdk-panel" role="dialog" aria-modal="true" aria-label="Command palette">
+      <input
+        data-cmdk-input
+        type="text"
+        autocomplete="off"
+        spellcheck="false"
+        aria-label="Search commands"
+        placeholder="Escribí un comando…"
+      />
+      <ul class="cmdk-list" data-cmdk-list role="listbox" aria-label="Commands">
+        <li role="presentation">
+          <button type="button" class="cmdk-item" role="option" data-cmdk-item data-cmdk-goto="about">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"></path><path d="M5 10v10h14V10"></path></svg>
+            <span class="flex-1 text-left"><span data-locale="es">Sobre mí</span><span data-locale="en" hidden>About</span></span>
+            <span class="cmdk-num">01</span>
+          </button>
+        </li>
+        <li role="presentation">
+          <button type="button" class="cmdk-item" role="option" data-cmdk-item data-cmdk-goto="experience">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"></rect><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"></path></svg>
+            <span class="flex-1 text-left"><span data-locale="es">Experiencia</span><span data-locale="en" hidden>Experience</span></span>
+            <span class="cmdk-num">02</span>
+          </button>
+        </li>
+        <li role="presentation">
+          <button type="button" class="cmdk-item" role="option" data-cmdk-item data-cmdk-goto="projects">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+            <span class="flex-1 text-left"><span data-locale="es">Proyectos</span><span data-locale="en" hidden>Projects</span></span>
+            <span class="cmdk-num">03</span>
+          </button>
+        </li>
+        <li role="presentation">
+          <button type="button" class="cmdk-item" role="option" data-cmdk-item data-cmdk-goto="certifications">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="9" r="5"></circle><path d="m8.5 13.5-1.5 7 5-3 5 3-1.5-7"></path></svg>
+            <span class="flex-1 text-left"><span data-locale="es">Certificaciones</span><span data-locale="en" hidden>Certifications</span></span>
+            <span class="cmdk-num">04</span>
+          </button>
+        </li>
+        <li role="presentation">
+          <a class="cmdk-item" role="option" data-cmdk-item href={`mailto:${es.data.email}`}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="m22 6-10 7L2 6"></path></svg>
+            <span class="flex-1 text-left"><span data-locale="es">Contacto</span><span data-locale="en" hidden>Contact</span></span>
+          </a>
+        </li>
+        {es.data.cv && (
+          <li role="presentation">
+            <button type="button" class="cmdk-item" role="option" data-cmdk-item data-cmdk-action="cv">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><path d="M14 2v6h6"></path></svg>
+              <span class="flex-1 text-left"><span data-locale="es">Ver CV</span><span data-locale="en" hidden>View CV</span></span>
+            </button>
+          </li>
+        )}
+        <li role="presentation">
+          <button type="button" class="cmdk-item" role="option" data-cmdk-item data-cmdk-action="top">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"></path><path d="m5 12 7-7 7 7"></path></svg>
+            <span class="flex-1 text-left"><span data-locale="es">Volver arriba</span><span data-locale="en" hidden>Back to top</span></span>
+          </button>
+        </li>
+      </ul>
+      <div class="cmdk-footer" aria-hidden="true">
+        <span><kbd>↑↓</kbd> navegar</span>
+        <span><kbd>↵</kbd> abrir</span>
+        <span><kbd>esc</kbd> cerrar</span>
+      </div>
+    </div>
+  </div>
 </Base>
 
 <script>

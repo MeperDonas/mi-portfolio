@@ -290,12 +290,16 @@
   }
 }
 
-/* Certifications: credential ledger rows, distinct from project cards. */
+/* Certifications: credential ledger rows, distinct from project cards.
+   Each row carries its issuer's accent hue (--cred-accent from tags.ts):
+   the leading edge lights up on hover and the mark tints to match. */
 .cred-list {
   border-top: 1px solid var(--color-hairline);
 }
 
 .cred-row {
+  position: relative;
+  overflow: hidden;
   border-bottom: 1px solid var(--color-hairline);
   padding-inline: 8px;
   transition: background-color 0.25s ease;
@@ -303,6 +307,28 @@
 
 .cred-row:hover {
   background: var(--color-surface-1);
+}
+
+/* Leading-edge accent bar that draws in on hover. */
+.cred-row::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 14%;
+  bottom: 14%;
+  width: 2px;
+  border-radius: 1px;
+  background: var(--cred-accent, #8b93ff);
+  opacity: 0;
+  transform: scaleY(0.35);
+  transition:
+    opacity 0.25s ease,
+    transform 0.3s var(--ease-out-expo);
+}
+
+.cred-row:hover::before {
+  opacity: 1;
+  transform: scaleY(1);
 }
 
 .cred-mark {
@@ -325,9 +351,24 @@
 }
 
 .cred-row:hover .cred-mark {
-  color: var(--color-on-primary);
-  background: var(--color-primary);
-  border-color: var(--color-primary);
+  color: var(--color-primary-hover);
+  background: rgba(139, 147, 255, 0.12);
+  border-color: rgba(139, 147, 255, 0.45);
+}
+
+@supports (color: color-mix(in srgb, red, blue)) {
+  .cred-row:hover .cred-mark {
+    color: color-mix(in srgb, var(--cred-accent, #8b93ff) 85%, white);
+    background: color-mix(in srgb, var(--cred-accent, #8b93ff) 16%, transparent);
+    border-color: color-mix(in srgb, var(--cred-accent, #8b93ff) 52%, transparent);
+  }
+}
+
+/* Smaller ghost index for the short ledger rows. */
+.cred-ghost {
+  right: -4px;
+  bottom: -12px;
+  font-size: 4.25rem;
 }
 
 .cred-date {
@@ -611,9 +652,22 @@
   }
 }
 
+/* Film-grain texture overlay: a tiny tiled SVG turbulence noise that adds
+   tactile depth to the near-black canvas. Static by design (zero animation
+   cost) and faint enough to stay out of the content's way. */
+.grain-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 41; /* above content and mouse glow (40), below the CV modal (60) */
+  pointer-events: none;
+  opacity: 0.055;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+}
+
 /* Mouse-reactive background glow (fixed overlay, position updated by app.ts).
- * Deliberately faint: a small radius at low alpha keeps it atmospheric without
- * becoming the spotlight-card effect the canon forbids. */
+ * Deliberately faint so it stays atmospheric instead of becoming the
+ * spotlight-card effect the canon forbids. */
 .mouse-glow {
   position: fixed;
   inset: 0;
@@ -755,6 +809,131 @@
 }
 
 /* ---------------------------------------------------------------------------
+ * Command palette (Ctrl/Cmd+K) — searchable launcher, Linear-style
+ * ------------------------------------------------------------------------- */
+.cmdk {
+  position: fixed;
+  inset: 0;
+  z-index: 50; /* above grain (41), below nothing else */
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 14vh 1.5rem 1.5rem;
+}
+
+.cmdk-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.72);
+  animation: cv-fade 0.18s ease-out;
+}
+
+.cmdk-panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: min(560px, 100%);
+  overflow: hidden;
+  background: var(--color-surface-1);
+  border: 1px solid var(--color-hairline-strong);
+  border-radius: var(--radius-xl);
+  box-shadow:
+    0 24px 80px rgba(0, 0, 0, 0.6),
+    0 0 40px rgba(94, 106, 210, 0.14);
+  animation: cv-pop 0.2s var(--ease-out-expo);
+}
+
+.cmdk-input {
+  flex: none;
+  width: 100%;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--color-hairline);
+  padding: 16px 20px;
+  font-size: 15px;
+  color: var(--color-ink);
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.cmdk-input:focus {
+  border-bottom-color: var(--color-primary);
+}
+
+.cmdk-input::placeholder {
+  color: var(--color-ink-tertiary);
+}
+
+.cmdk-list {
+  margin: 0;
+  padding: 8px;
+  list-style: none;
+  overflow-y: auto;
+}
+
+.cmdk-item {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 12px;
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+  font-size: 14px;
+  color: var(--color-ink-subtle);
+  cursor: pointer;
+  text-decoration: none;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.cmdk-item svg {
+  flex: none;
+  width: 16px;
+  height: 16px;
+}
+
+.cmdk-item:hover {
+  background: var(--color-surface-2);
+  color: var(--color-ink);
+}
+
+.cmdk-item.is-selected {
+  background: var(--color-surface-2);
+  color: var(--color-ink);
+  box-shadow: inset 2px 0 0 var(--color-primary);
+}
+
+.cmdk-num {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-ink-tertiary);
+}
+
+.cmdk-footer {
+  display: flex;
+  gap: 16px;
+  padding: 10px 16px;
+  border-top: 1px solid var(--color-hairline);
+  font-size: 11px;
+  color: var(--color-ink-tertiary);
+}
+
+.cmdk-footer kbd {
+  margin-right: 2px;
+  padding: 2px 6px;
+  border: 1px solid var(--color-hairline);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  background: var(--color-surface-2);
+  font-family: var(--font-mono);
+  font-size: 10px;
+}
+
+/* ---------------------------------------------------------------------------
  * Reduced motion: every animated system above flattens to its final state.
  * ------------------------------------------------------------------------- */
 @media (prefers-reduced-motion: reduce) {
@@ -800,7 +979,9 @@
   }
 
   .cv-modal-panel,
-  .cv-modal-backdrop {
+  .cv-modal-backdrop,
+  .cmdk-panel,
+  .cmdk-backdrop {
     animation: none;
   }
 }

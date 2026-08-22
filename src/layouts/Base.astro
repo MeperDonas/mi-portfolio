@@ -10,6 +10,8 @@ interface Props {
 }
 
 const { title, description } = Astro.props;
+
+const siteUrl = 'https://meperfolio.vercel.app';
 ---
 
 <!doctype html>
@@ -25,9 +27,19 @@ const { title, description } = Astro.props;
     <meta name="theme-color" content="#010102" />
     <title>{title}</title>
     {description && <meta name="description" content={description} />}
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    {description && <meta property="og:description" content={description} />}
+    <meta property="og:image" content={`${siteUrl}/og.png`} />
+    <meta property="og:url" content={siteUrl} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    {description && <meta name="twitter:description" content={description} />}
+    <meta name="twitter:image" content={`${siteUrl}/og.png`} />
   </head>
   <body class="bg-canvas text-ink antialiased lg:h-screen lg:overflow-hidden">
     <div aria-hidden="true" class="mouse-glow"></div>
+    <div aria-hidden="true" class="grain-overlay"></div>
     <slot />
     <Analytics />
     <script>

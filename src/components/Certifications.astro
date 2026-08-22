@@ -1,6 +1,7 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import type { Locale } from '../lib/i18n';
+import { tagHue } from '../lib/tags';
 
 interface Props {
   locale: Locale;
@@ -29,38 +30,47 @@ function issuerMark(issuer: string): string {
       </h2>
       <ul class="cred-list mt-12">
         {
-          entries.map((entry) => (
-            <li class="cred-row flex items-center gap-4 py-5 sm:gap-5" data-reveal>
-              <span class="cred-mark" aria-hidden="true">
-                {issuerMark(entry.data.issuer)}
+          entries.map((entry, i) => (
+            <li
+              class="cred-row py-5"
+              data-reveal
+              style={`--cred-accent: ${tagHue(entry.data.issuer)}`}
+            >
+              <span class="project-ghost cred-ghost" aria-hidden="true">
+                {String(i + 1).padStart(2, '0')}
               </span>
-              <div class="min-w-0 flex-1">
-                <h3 class="text-base font-medium tracking-[-0.01em] text-ink">{entry.data.title}</h3>
-                <p class="mt-0.5 text-sm text-ink-subtle">{entry.data.issuer}</p>
-              </div>
-              <span class="cred-date hidden sm:inline">{entry.data.date}</span>
-              {entry.data.url && (
-                <a
-                  href={entry.data.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={`${entry.data.title} — ${entry.data.issuer}`}
-                  class="project-link"
-                >
-                  <svg
-                    class="h-3.5 w-3.5"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    aria-hidden="true"
+              <div class="relative flex items-center gap-4 sm:gap-5">
+                <span class="cred-mark" aria-hidden="true">
+                  {issuerMark(entry.data.issuer)}
+                </span>
+                <div class="min-w-0 flex-1">
+                  <h3 class="text-base font-medium tracking-[-0.01em] text-ink">{entry.data.title}</h3>
+                  <p class="mt-0.5 text-sm text-ink-subtle">{entry.data.issuer}</p>
+                </div>
+                <span class="cred-date hidden sm:inline">{entry.data.date}</span>
+                {entry.data.url && (
+                  <a
+                    href={entry.data.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`${entry.data.title} — ${entry.data.issuer}`}
+                    class="project-link"
                   >
-                    <path d="M7 17L17 7M9 7h8v8"></path>
-                  </svg>
-                </a>
-              )}
+                    <svg
+                      class="h-3.5 w-3.5"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <path d="M7 17L17 7M9 7h8v8"></path>
+                    </svg>
+                  </a>
+                )}
+              </div>
             </li>
           ))
         }
